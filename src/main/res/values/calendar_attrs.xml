@@ -1,7 +1,10 @@
 <resources>
     <declare-styleable name="SingleRowCalendar">
-        @required <attr name="itemLayoutId" format="reference" />
-        @required <attr name="itemDateTextViewId" format="reference" />
-        @required <attr name="itemDayTextViewId" format="reference" />
+        <attr name="itemLayoutId" format="reference" />
+        <attr name="itemDateTextViewId" format="reference" />
+        <attr name="itemDayTextViewId" format="reference" />
+        <attr name="pastDaysCount" format="integer" />
+        <attr name="futureDaysCount" format="integer" />
+        <attr name="includeCurrentDate" format="boolean" />
     </declare-styleable>
 </resources>

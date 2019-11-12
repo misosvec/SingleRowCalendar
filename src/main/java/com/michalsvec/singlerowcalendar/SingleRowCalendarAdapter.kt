@@ -24,6 +24,8 @@ class SingleRowCalendarAdapter(private val dateList: List<Date>, private val lay
             object : ItemDetailsLookup.ItemDetails<Long>() {
                 override fun getPosition(): Int = adapterPosition
                 override fun getSelectionKey(): Long? = itemId
+
+
             }
     }
 
