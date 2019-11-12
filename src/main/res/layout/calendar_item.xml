@@ -9,7 +9,7 @@
 
 
         <TextView
-            android:id="@+id/tv_day_number_calendar_item"
+            android:id="@+id/tv_date_calendar_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="17sp"
@@ -34,13 +34,14 @@
             android:textColor="@android:color/black"
             android:lineSpacingExtra="5sp"
             android:gravity="center_horizontal"
-            tools:text="ST"
-            android:text="ST"
-            app:layout_constraintEnd_toEndOf="@+id/tv_day_number_calendar_item"
-            app:layout_constraintStart_toStartOf="@+id/tv_day_number_calendar_item"
+            tools:text="Fri"
+            android:text="15"
+            app:layout_constraintEnd_toEndOf="@+id/tv_date_calendar_item"
+            app:layout_constraintStart_toStartOf="@+id/tv_date_calendar_item"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="1dp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_day_number_calendar_item"
+            app:layout_constraintTop_toBottomOf="@+id/tv_date_calendar_item"
             />
+
     </androidx.constraintlayout.widget.ConstraintLayout>

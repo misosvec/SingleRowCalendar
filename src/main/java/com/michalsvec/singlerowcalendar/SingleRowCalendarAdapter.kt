@@ -1,14 +1,18 @@
 package com.michalsvec.singlerowcalendar
 
+import android.content.res.XmlResourceParser
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.calendar_item.view.*
 import java.util.*
 
-class SingleRowCalendarAdapter(private val dateList: List<Date>) :
+class SingleRowCalendarAdapter(private val dateList: List<Date>, private val layoutId: Int, private val textViewDateId: Int, private val textViewDayId: Int) :
+
     RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
 
     init {
@@ -26,14 +30,14 @@ class SingleRowCalendarAdapter(private val dateList: List<Date>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.calendar_item, parent, false)
+            .inflate(layoutId, parent, false)
 
         return CalendarViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.itemView.tv_day_abbreviation_calendar_item.text = dateList[position].toString()
-
+        holder.itemView.findViewById<TextView>(textViewDayId).text = DateHelper.getDayAbbreviation(dateList[position])
+        holder.itemView.findViewById<TextView>(textViewDateId).text = DateHelper.getDayNumber(dateList[position])
     }
 
     override fun getItemCount() = dateList.size

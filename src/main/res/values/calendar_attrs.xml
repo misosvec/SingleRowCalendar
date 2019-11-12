@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="SingleRowCalendar">
+        @required <attr name="itemLayoutId" format="reference" />
+        @required <attr name="itemDateTextViewId" format="reference" />
+        @required <attr name="itemDayTextViewId" format="reference" />
+    </declare-styleable>
+</resources>
