@@ -1,45 +1,73 @@
 package com.michalsvec.singlerowcalendar
 
-import android.content.res.XmlResourceParser
-import android.text.Layout
+import DateHelper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.calendar_item.view.*
 import java.util.*
 
-class SingleRowCalendarAdapter(private val dateList: List<Date>, private val layoutId: Int, private val textViewDateId: Int, private val textViewDayId: Int) :
+class SingleRowCalendarAdapter(
+    private val dateList: List<Date>,
+    private val itemLayoutId: Int,
+    private val textViewDateId: Int,
+    private val textViewDayId: Int,
+    private val selectedItemLayoutId: Int
+) :
 
     RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
+
+
+    val ITEM = 3
+    val SELECTED_ITEM = 5
+
+
+    companion object {
+        lateinit var selectionTracker: SelectionTracker<Long>
+    }
+
+    override fun getItemViewType(position: Int): Int =
+        if (selectionTracker.isSelected(position.toLong()))
+            SELECTED_ITEM
+        else
+            ITEM
+
 
     init {
         setHasStableIds(true)
     }
 
-    class CalendarViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    inner class CalendarViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
             object : ItemDetailsLookup.ItemDetails<Long>() {
                 override fun getPosition(): Int = adapterPosition
                 override fun getSelectionKey(): Long? = itemId
-
-
             }
+
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-            .inflate(layoutId, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder =
+        if (viewType == ITEM)
+            CalendarViewHolder(LayoutInflater.from(parent.context)
+                .inflate(itemLayoutId, parent, false))
+        else
+            CalendarViewHolder(LayoutInflater.from(parent.context)
+                .inflate(selectedItemLayoutId, parent, false))
 
-        return CalendarViewHolder(itemView)
-    }
+
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.itemView.findViewById<TextView>(textViewDayId).text = DateHelper.getDayAbbreviation(dateList[position])
-        holder.itemView.findViewById<TextView>(textViewDateId).text = DateHelper.getDayNumber(dateList[position])
+        holder.itemView.findViewById<TextView>(textViewDayId)?.text =
+            DateHelper.getDayAbbreviation(dateList[position])
+        holder.itemView.findViewById<TextView>(textViewDateId)?.text =
+            DateHelper.getDayNumber(dateList[position])
+
     }
 
     override fun getItemCount() = dateList.size
