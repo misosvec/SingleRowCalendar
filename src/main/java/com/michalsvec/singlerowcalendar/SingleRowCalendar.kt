@@ -1,6 +1,5 @@
 package com.michalsvec.singlerowcalendar
 
-import DateHelper
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.selection.SelectionTracker
@@ -14,7 +13,17 @@ import java.util.*
 class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
 
 
+
+
+
+    fun setMontAndYearListener(MonthAndYearListener: MonthAndYearListener){
+        this.MonthAndYearListener = MonthAndYearListener
+    }
+
     lateinit var selectionTracker: SelectionTracker<Long>
+    private lateinit var MonthAndYearListener: MonthAndYearListener
+    private  var previousMonthNumber = ""
+    private var previousYear = ""
 
     init {
 
@@ -69,6 +78,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 recycle()
             }
         }
+
+
+
     }
 
 
@@ -85,11 +97,14 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     ) {
 
         this.apply {
+
+            val dates =                 loadDates(pastDaysCount, futureDaysCount, includeCurrentDate)
+
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             this.layoutManager?.scrollToPosition(initialScrollPosition)
             setHasFixedSize(true)
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
-                loadDates(pastDaysCount, futureDaysCount, includeCurrentDate),
+                dates,
                 itemLayoutId,
                 itemDateTextViewId,
                 itemDayTextViewId,
@@ -100,6 +115,28 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             initSelection()
 
             SingleRowCalendarAdapter.selectionTracker = selectionTracker
+
+
+           addOnScrollListener(object: RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val lastVisibleItem = if (dx > 0)
+                        (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                    else
+                        (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+
+
+                    if(previousMonthNumber != DateHelper.getMonthNumber(dates[lastVisibleItem]) ||
+                        previousYear != DateHelper.getYear(dates[lastVisibleItem]))
+                        MonthAndYearListener.whenMonthAndYearChange(
+                        DateHelper.getMonthNumber(dates[lastVisibleItem]),
+                        DateHelper.getMonthName(dates[lastVisibleItem]),
+                        DateHelper.getYear(dates[lastVisibleItem]))
+
+
+                    previousMonthNumber =   DateHelper.getMonthNumber(dates[lastVisibleItem])
+                    previousYear = DateHelper.getYear(dates[lastVisibleItem])
+                }
+            })
         }
     }
 

@@ -1,6 +1,5 @@
 package com.michalsvec.singlerowcalendar
 
-import DateHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,10 +65,10 @@ class SingleRowCalendarAdapter(
 
         holder.itemView.findViewById<TextView>(textViewDayId)?.text =
             when(dayNameFormat){
-                1 -> DateHelper.get1LetterDayAbbreviation(dateList[position])
-                3 -> DateHelper.get3LettersDayAbbreviation(dateList[position])
-                0 -> DateHelper.getDayFullName(dateList[position])
-                else -> DateHelper.get3LettersDayAbbreviation(dateList[position])
+                1 -> DateHelper.getDay1LetterAbbreviation(dateList[position])
+                3 -> DateHelper.getDay3LettersAbbreviation(dateList[position])
+                0 -> DateHelper.getDayName(dateList[position])
+                else -> DateHelper.getDay3LettersAbbreviation(dateList[position])
             }
 
         holder.itemView.findViewById<TextView>(textViewDateId)?.text =

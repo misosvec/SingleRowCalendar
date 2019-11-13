@@ -1,3 +1,5 @@
+package com.michalsvec.singlerowcalendar
+
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -6,15 +8,26 @@ object DateHelper {
     /**
      * @return date abbreviation, for example Fri, Thu, Mon, etc...
      */
-    fun getDayFullName(date: Date): String =
+    fun getDayName(date: Date): String =
         SimpleDateFormat("EEEE", Locale.getDefault()).format(date)
 
 
-    fun get3LettersDayAbbreviation(date: Date): String =
+    fun getDay3LettersAbbreviation(date: Date): String =
         SimpleDateFormat("EE", Locale.getDefault()).format(date)
 
-    fun get1LetterDayAbbreviation(date: Date): String =
+    fun getDay1LetterAbbreviation(date: Date): String =
         SimpleDateFormat("EEEEE", Locale.getDefault()).format(date)
+
+
+    fun getMonthNumber(date: Date): String =
+        SimpleDateFormat("MM", Locale.getDefault()).format(date)
+
+    fun getMonthName(date: Date): String =
+        SimpleDateFormat("MMMM", Locale.getDefault()).format(date)
+
+
+    fun getYear(date: Date): String =
+        SimpleDateFormat("yyyy", Locale.getDefault()).format(date)
 
 
 
