@@ -12,8 +12,9 @@ import java.util.*
 class SingleRowCalendarAdapter(
     private val dateList: List<Date>,
     private val itemLayoutId: Int,
-    private val textViewDateId: Int,
-    private val textViewDayId: Int,
+    private val dateTextViewId: Int,
+    private val dayTextViewId: Int,
+    private val monthTextViewId: Int,
     private val selectedItemLayoutId: Int,
     private val dayNameFormat: Int
 ) :
@@ -21,8 +22,8 @@ class SingleRowCalendarAdapter(
     RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
 
 
-    val ITEM = 3
-    val SELECTED_ITEM = 5
+    private val ITEM = 3
+    private val SELECTED_ITEM = 5
 
 
     companion object {
@@ -47,9 +48,7 @@ class SingleRowCalendarAdapter(
                 override fun getPosition(): Int = adapterPosition
                 override fun getSelectionKey(): Long? = itemId
             }
-
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder =
         if (viewType == ITEM)
@@ -59,20 +58,23 @@ class SingleRowCalendarAdapter(
             CalendarViewHolder(LayoutInflater.from(parent.context)
                 .inflate(selectedItemLayoutId, parent, false))
 
-
-
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
 
-        holder.itemView.findViewById<TextView>(textViewDayId)?.text =
+        holder.itemView.findViewById<TextView>(dayTextViewId)?.text =
             when(dayNameFormat){
-                1 -> DateHelper.getDay1LetterAbbreviation(dateList[position])
-                3 -> DateHelper.getDay3LettersAbbreviation(dateList[position])
+                1 -> DateHelper.getDay1LetterName(dateList[position])
+                3 -> DateHelper.getDay3LettersName(dateList[position])
                 0 -> DateHelper.getDayName(dateList[position])
-                else -> DateHelper.getDay3LettersAbbreviation(dateList[position])
+                else -> DateHelper.getDay3LettersName(dateList[position])
             }
 
-        holder.itemView.findViewById<TextView>(textViewDateId)?.text =
+        holder.itemView.findViewById<TextView>(dateTextViewId)?.text =
             DateHelper.getDayNumber(dateList[position])
+
+        holder.itemView.findViewById<TextView>(monthTextViewId)?.text =
+            DateHelper.getMonth3LettersName(dateList[position])
+
+
 
     }
 

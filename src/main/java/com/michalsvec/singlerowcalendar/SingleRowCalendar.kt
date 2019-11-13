@@ -33,10 +33,14 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             try {
                 val itemLayoutId = getResourceId(R.styleable.SingleRowCalendar_itemLayoutId, 0)
-                val itemDateTextViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_itemDateTextViewId, 0)
-                val itemDayTextViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_itemDayTextViewId, 0)
+                val dateTextViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_dateTextViewId, 0)
+                val dayTextViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_dayTextViewId, 0)
+
+                val monthTextViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_monthTextViewId, 0)
+
 
                 val selectedItemLayoutId =
                     getResourceId(R.styleable.SingleRowCalendar_selectedItemLayoutId, 0)
@@ -61,11 +65,14 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
 
 
-                if (itemLayoutId != 0 && itemDateTextViewId != 0 && itemDayTextViewId != 0) {
+
+
+                if (itemLayoutId != 0 && dateTextViewId != 0 && dayTextViewId != 0) {
                     init(
                         itemLayoutId,
-                        itemDateTextViewId,
-                        itemDayTextViewId,
+                        dateTextViewId,
+                        dayTextViewId,
+                        monthTextViewId,
                         selectedItemLayoutId,
                         futureDaysCount,
                         pastDaysCount,
@@ -86,8 +93,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
     private fun init(
         itemLayoutId: Int,
-        itemDateTextViewId: Int,
-        itemDayTextViewId: Int,
+        dateTextViewId: Int,
+        dayTextViewId: Int,
+        monthTextViewId: Int,
         selectedItemLayoutId: Int,
         futureDaysCount: Int,
         pastDaysCount: Int,
@@ -106,8 +114,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
                 dates,
                 itemLayoutId,
-                itemDateTextViewId,
-                itemDayTextViewId,
+                dateTextViewId,
+                dayTextViewId,
+                monthTextViewId,
                 selectedItemLayoutId,
                 dayNameFormat
             )

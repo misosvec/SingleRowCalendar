@@ -12,10 +12,10 @@ object DateHelper {
         SimpleDateFormat("EEEE", Locale.getDefault()).format(date)
 
 
-    fun getDay3LettersAbbreviation(date: Date): String =
+    fun getDay3LettersName(date: Date): String =
         SimpleDateFormat("EE", Locale.getDefault()).format(date)
 
-    fun getDay1LetterAbbreviation(date: Date): String =
+    fun getDay1LetterName(date: Date): String =
         SimpleDateFormat("EEEEE", Locale.getDefault()).format(date)
 
 
@@ -24,6 +24,9 @@ object DateHelper {
 
     fun getMonthName(date: Date): String =
         SimpleDateFormat("MMMM", Locale.getDefault()).format(date)
+
+    fun getMonth3LettersName(date: Date): String =
+        SimpleDateFormat("MMM", Locale.getDefault()).format(date)
 
 
     fun getYear(date: Date): String =

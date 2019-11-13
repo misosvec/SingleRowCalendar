@@ -1,8 +1,9 @@
 <resources>
     <declare-styleable name="SingleRowCalendar">
         <attr name="itemLayoutId" format="reference" />
-        <attr name="itemDateTextViewId" format="reference" />
-        <attr name="itemDayTextViewId" format="reference" />
+        <attr name="dateTextViewId" format="reference" />
+        <attr name="dayTextViewId" format="reference" />
+        <attr name="monthTextViewId" format="reference" />
         <attr name="selectedItemLayoutId" format="reference" />
         <attr name="pastDaysCount" format="integer" />
         <attr name="futureDaysCount" format="integer" />
