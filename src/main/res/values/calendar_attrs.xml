@@ -7,5 +7,11 @@
         <attr name="pastDaysCount" format="integer" />
         <attr name="futureDaysCount" format="integer" />
         <attr name="includeCurrentDate" format="boolean" />
+        <attr name="initialPositionIndex" format="integer" />
+        <attr name="dayNameFormat" format="enum">
+        <enum name="threeLetters" value="3"/>
+        <enum name="oneLetter" value="1"/>
+        <enum name="fullName" value="0"/>
+        </attr>
     </declare-styleable>
 </resources>

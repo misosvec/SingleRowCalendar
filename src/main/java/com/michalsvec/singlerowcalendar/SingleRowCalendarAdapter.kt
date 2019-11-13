@@ -1,7 +1,6 @@
 package com.michalsvec.singlerowcalendar
 
 import DateHelper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,8 @@ class SingleRowCalendarAdapter(
     private val itemLayoutId: Int,
     private val textViewDateId: Int,
     private val textViewDayId: Int,
-    private val selectedItemLayoutId: Int
+    private val selectedItemLayoutId: Int,
+    private val dayNameFormat: Int
 ) :
 
     RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
@@ -63,8 +63,15 @@ class SingleRowCalendarAdapter(
 
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
+
         holder.itemView.findViewById<TextView>(textViewDayId)?.text =
-            DateHelper.getDayAbbreviation(dateList[position])
+            when(dayNameFormat){
+                1 -> DateHelper.get1LetterDayAbbreviation(dateList[position])
+                3 -> DateHelper.get3LettersDayAbbreviation(dateList[position])
+                0 -> DateHelper.getDayFullName(dateList[position])
+                else -> DateHelper.get3LettersDayAbbreviation(dateList[position])
+            }
+
         holder.itemView.findViewById<TextView>(textViewDateId)?.text =
             DateHelper.getDayNumber(dateList[position])
 

@@ -6,8 +6,16 @@ object DateHelper {
     /**
      * @return date abbreviation, for example Fri, Thu, Mon, etc...
      */
-    fun getDayAbbreviation(date: Date): String =
+    fun getDayFullName(date: Date): String =
+        SimpleDateFormat("EEEE", Locale.getDefault()).format(date)
+
+
+    fun get3LettersDayAbbreviation(date: Date): String =
         SimpleDateFormat("EE", Locale.getDefault()).format(date)
+
+    fun get1LetterDayAbbreviation(date: Date): String =
+        SimpleDateFormat("EEEEE", Locale.getDefault()).format(date)
+
 
 
     /**

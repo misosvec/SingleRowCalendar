@@ -16,11 +16,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
     lateinit var selectionTracker: SelectionTracker<Long>
 
-
     init {
 
-
-        context.theme.obtainStyledAttributes(attrs, R.styleable.SingleRowCalendar, 0, 0
+        context.theme.obtainStyledAttributes(
+            attrs, R.styleable.SingleRowCalendar, 0, 0
         ).apply {
 
             try {
@@ -30,7 +29,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 val itemDayTextViewId =
                     getResourceId(R.styleable.SingleRowCalendar_itemDayTextViewId, 0)
 
-                val selectedItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_selectedItemLayoutId, 0)
+                val selectedItemLayoutId =
+                    getResourceId(R.styleable.SingleRowCalendar_selectedItemLayoutId, 0)
 
                 val pastDaysCount =
                     getInt(R.styleable.SingleRowCalendar_pastDaysCount, 0)
@@ -40,19 +40,29 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                     getInt(R.styleable.SingleRowCalendar_futureDaysCount, 30)
 
                 val includeCurrentDate =
-                getBoolean(R.styleable.SingleRowCalendar_includeCurrentDate, true)
+                    getBoolean(R.styleable.SingleRowCalendar_includeCurrentDate, true)
+
+
+                val initialPositionIndex =
+                    getInt(R.styleable.SingleRowCalendar_initialPositionIndex, pastDaysCount)
+
+                val dayNameFormat =
+                    getInt(R.styleable.SingleRowCalendar_dayNameFormat, 3)
+
 
 
 
                 if (itemLayoutId != 0 && itemDateTextViewId != 0 && itemDayTextViewId != 0) {
                     init(
-                         itemLayoutId,
-                         itemDateTextViewId,
+                        itemLayoutId,
+                        itemDateTextViewId,
                         itemDayTextViewId,
                         selectedItemLayoutId,
-                         futureDaysCount,
+                        futureDaysCount,
                         pastDaysCount,
-                        includeCurrentDate
+                        includeCurrentDate,
+                        initialPositionIndex,
+                        dayNameFormat
                     )
                 }
             } finally {
@@ -62,18 +72,31 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     }
 
 
-    private fun init(itemLayoutId: Int, itemDateTextViewId: Int, itemDayTextViewId: Int, selectedItemLayoutId: Int, futureDaysCount: Int, pastDaysCount: Int,includeCurrentDate: Boolean) {
+    private fun init(
+        itemLayoutId: Int,
+        itemDateTextViewId: Int,
+        itemDayTextViewId: Int,
+        selectedItemLayoutId: Int,
+        futureDaysCount: Int,
+        pastDaysCount: Int,
+        includeCurrentDate: Boolean,
+        initialScrollPosition: Int,
+        dayNameFormat: Int
+    ) {
 
         this.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            this.layoutManager?.scrollToPosition(initialScrollPosition)
             setHasFixedSize(true)
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
                 loadDates(pastDaysCount, futureDaysCount, includeCurrentDate),
                 itemLayoutId,
                 itemDateTextViewId,
-                itemDayTextViewId
-            ,selectedItemLayoutId)
-                adapter = singleRowCalendarAdapter
+                itemDayTextViewId,
+                selectedItemLayoutId,
+                dayNameFormat
+            )
+            adapter = singleRowCalendarAdapter
             initSelection()
 
             SingleRowCalendarAdapter.selectionTracker = selectionTracker
@@ -81,16 +104,15 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     }
 
 
-
     private fun loadDates(pastDays: Int, futureDays: Int, includeCurrentDate: Boolean): List<Date> {
         val futureList = DateHelper.getFutureDates(futureDays)
         val cal = Calendar.getInstance(Locale.getDefault())
         val pastList = DateHelper.getPastDates(pastDays).reversed()
-        return if(includeCurrentDate) pastList + cal.time +  futureList else pastList  +  futureList
+        return if (includeCurrentDate) pastList + cal.time + futureList else pastList + futureList
     }
 
 
-    private fun initSelection(){
+    private fun initSelection() {
         selectionTracker = SelectionTracker.Builder(
             "singleRowCalendarSelectionTracker",
             this,
@@ -98,9 +120,5 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             CalendarDetailsLookup(this),
             StorageStrategy.createLongStorage()
         ).build()
-
-
-//            .withSelectionPredicate(predictate).build()
-//        selectionObserver()
     }
 }
