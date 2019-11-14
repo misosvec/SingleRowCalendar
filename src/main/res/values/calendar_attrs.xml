@@ -10,9 +10,12 @@
         <attr name="includeCurrentDate" format="boolean" />
         <attr name="initialPositionIndex" format="integer" />
         <attr name="dayNameFormat" format="enum">
-        <enum name="threeLetters" value="3"/>
-        <enum name="oneLetter" value="1"/>
-        <enum name="fullName" value="0"/>
+            <enum name="threeLetters" value="3"/>
+            <enum name="oneLetter" value="1"/>
+            <enum name="fullName" value="0"/>
         </attr>
+        <attr name="multiSelection" format="boolean" />
+        <attr name="disableUnselection" format="boolean" />
+        <attr name="enableLongPress" format="boolean" />
     </declare-styleable>
 </resources>

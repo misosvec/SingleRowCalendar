@@ -50,13 +50,17 @@ class SingleRowCalendarAdapter(
             }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder =
-        if (viewType == ITEM)
-            CalendarViewHolder(LayoutInflater.from(parent.context)
-                .inflate(itemLayoutId, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
+        val itemView = if (viewType == ITEM)
+            LayoutInflater.from(parent.context)
+                .inflate(itemLayoutId, parent, false)
         else
-            CalendarViewHolder(LayoutInflater.from(parent.context)
-                .inflate(selectedItemLayoutId, parent, false))
+            LayoutInflater.from(parent.context)
+                    .inflate(selectedItemLayoutId, parent, false)
+
+
+        return CalendarViewHolder(itemView)
+    }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
 

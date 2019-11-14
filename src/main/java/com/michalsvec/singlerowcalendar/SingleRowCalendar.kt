@@ -1,7 +1,10 @@
 package com.michalsvec.singlerowcalendar
 
+import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,22 +13,26 @@ import com.michalsvec.singlerowcalendar.selection.CalendarDetailsLookup
 import com.michalsvec.singlerowcalendar.selection.CalendarKeyProvider
 import java.util.*
 
+
 class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
 
-
-
-
-
-    fun setMontAndYearListener(MonthAndYearListener: MonthAndYearListener){
+    fun setMontAndYearListener(MonthAndYearListener: MonthAndYearListener) {
         this.MonthAndYearListener = MonthAndYearListener
     }
 
+    private val GHOST_ITEM_KEY = -999999999999999299
+
     lateinit var selectionTracker: SelectionTracker<Long>
     private lateinit var MonthAndYearListener: MonthAndYearListener
-    private  var previousMonthNumber = ""
+    private var previousMonthNumber = ""
     private var previousYear = ""
+    private var multiSelection: Boolean = false //default value
+    private var disableUnselection: Boolean = true // default value
+    private var enableLongPress: Boolean = false // default value
 
     init {
+
+        itemAnimator = null // this remove blinking when clicking items
 
         context.theme.obtainStyledAttributes(
             attrs, R.styleable.SingleRowCalendar, 0, 0
@@ -62,6 +69,15 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 val dayNameFormat =
                     getInt(R.styleable.SingleRowCalendar_dayNameFormat, 3)
 
+                multiSelection =
+                    getBoolean(R.styleable.SingleRowCalendar_multiSelection, false)
+
+                disableUnselection =
+                    getBoolean(R.styleable.SingleRowCalendar_disableUnselection, true)
+
+                enableLongPress =
+                    getBoolean(R.styleable.SingleRowCalendar_enableLongPress, false)
+
 
 
 
@@ -87,7 +103,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         }
 
 
-
     }
 
 
@@ -106,10 +121,19 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
         this.apply {
 
-            val dates =                 loadDates(pastDaysCount, futureDaysCount, includeCurrentDate)
+            val displayMetrics = DisplayMetrics()
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val height = displayMetrics.heightPixels
+            val width = displayMetrics.widthPixels
+            val dates = loadDates(pastDaysCount, futureDaysCount, includeCurrentDate)
 
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            this.layoutManager?.scrollToPosition(initialScrollPosition)
+            (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                initialScrollPosition,
+                0
+            )
+
+
             setHasFixedSize(true)
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
                 dates,
@@ -126,7 +150,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             SingleRowCalendarAdapter.selectionTracker = selectionTracker
 
 
-           addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     val lastVisibleItem = if (dx > 0)
                         (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
@@ -134,15 +158,17 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                         (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
 
-                    if(previousMonthNumber != DateHelper.getMonthNumber(dates[lastVisibleItem]) ||
-                        previousYear != DateHelper.getYear(dates[lastVisibleItem]))
+                    if (previousMonthNumber != DateHelper.getMonthNumber(dates[lastVisibleItem]) ||
+                        previousYear != DateHelper.getYear(dates[lastVisibleItem])
+                    )
                         MonthAndYearListener.whenMonthAndYearChange(
-                        DateHelper.getMonthNumber(dates[lastVisibleItem]),
-                        DateHelper.getMonthName(dates[lastVisibleItem]),
-                        DateHelper.getYear(dates[lastVisibleItem]))
+                            DateHelper.getMonthNumber(dates[lastVisibleItem]),
+                            DateHelper.getMonthName(dates[lastVisibleItem]),
+                            DateHelper.getYear(dates[lastVisibleItem])
+                        )
 
 
-                    previousMonthNumber =   DateHelper.getMonthNumber(dates[lastVisibleItem])
+                    previousMonthNumber = DateHelper.getMonthNumber(dates[lastVisibleItem])
                     previousYear = DateHelper.getYear(dates[lastVisibleItem])
                 }
             })
@@ -165,6 +191,88 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             CalendarKeyProvider(this),
             CalendarDetailsLookup(this),
             StorageStrategy.createLongStorage()
-        ).build()
+        ).withSelectionPredicate(object : SelectionTracker.SelectionPredicate<Long>() {
+            override fun canSelectMultiple(): Boolean {
+                return multiSelection
+            }
+
+            override fun canSetStateAtPosition(position: Int, nextState: Boolean): Boolean =
+                if (disableUnselection)
+                    if (nextState)
+                        disableUnselection
+                    else
+                        false
+                else
+                    true
+
+
+            override fun canSetStateForKey(key: Long, nextState: Boolean): Boolean =
+                if (disableUnselection)
+                    if (nextState)
+                        disableUnselection
+                    else
+                        false
+                else
+                    true
+
+        }).build()
+
+        disableLongPress()
+
+
     }
+
+    //  fun isDisabledLongPress(): Boolean = selectionTracker.isSelected(GHOST_ITEM_KEY)
+
+
+    fun disableLongPress() {
+        selectionTracker.select(GHOST_ITEM_KEY)
+
+    }
+
+    fun clearSelection() {
+        selectionTracker.clearSelection()
+        if (!enableLongPress)
+            disableLongPress()
+        selectionTracker.
+
+    }
+
+    fun select(position: Int) = selectionTracker.select(position.toLong())
+
+    fun deselect(position: Int) = selectionTracker.deselect(position.toLong())
+
+    fun isSelected(position: Int) = selectionTracker.isSelected(position.toLong())
+
+    fun hasSelection(): Boolean {
+        if (!enableLongPress)
+            if (selectionTracker.isSelected(GHOST_ITEM_KEY) && selectionTracker.selection.size() == 1)
+                return false
+            else if(selectionTracker.selection.size() >1)
+                return true
+            else
+                return false
+        else
+           return  selectionTracker.hasSelection()
+
+
+    }
+
+    fun onRestoreInstanceState(state: Bundle) = selectionTracker.onRestoreInstanceState(state)
+
+    fun onSaveInstanceState(state: Bundle) = selectionTracker.onSaveInstanceState(state)
+
+
+    fun getSelectedDates(): List<Date>{
+        if(!enableLongPress)
+            if(selectionTracker.selection.size() ==1 && selectionTracker.isSelected(GHOST_ITEM_KEY))
+                return listOf() // empty list
+    }
+
+    fun getSelectedIndexes(){
+    }
+
+    //TODO ADD OBSERVER
+
+
 }
