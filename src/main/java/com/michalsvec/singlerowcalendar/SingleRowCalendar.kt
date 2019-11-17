@@ -77,6 +77,12 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 enableLongPress =
                     getBoolean(R.styleable.SingleRowCalendar_enableLongPress, false)
 
+                val weekendDateSpecialColor =
+                    getInt(R.styleable.SingleRowCalendar_weekendDateSpecialColor, 0)
+
+                val weekendDaySpecialColor =
+                    getInt(R.styleable.SingleRowCalendar_weekendDaySpecialColor, 0)
+
 
 
 
@@ -93,7 +99,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                         pastDaysCount,
                         includeCurrentDate,
                         initialPositionIndex,
-                        dayNameFormat
+                        dayNameFormat,
+                        weekendDateSpecialColor,
+                        weekendDaySpecialColor
                     )
                 }
             } finally {
@@ -115,7 +123,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         pastDaysCount: Int,
         includeCurrentDate: Boolean,
         initialScrollPosition: Int,
-        dayNameFormat: Int
+        dayNameFormat: Int,
+        weekendDateSpecialColor: Int,
+        weekendDaySpecialColor: Int
     ) {
 
         this.apply {
@@ -142,7 +152,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 dayTextViewId,
                 monthTextViewId,
                 selectedItemLayoutId,
-                dayNameFormat
+                dayNameFormat,
+                weekendDateSpecialColor,
+                weekendDaySpecialColor
             )
             adapter = singleRowCalendarAdapter
             initSelection()

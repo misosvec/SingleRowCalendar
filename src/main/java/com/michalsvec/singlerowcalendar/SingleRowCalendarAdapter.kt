@@ -1,5 +1,7 @@
 package com.michalsvec.singlerowcalendar
 
+import android.content.res.ColorStateList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,15 +18,18 @@ class SingleRowCalendarAdapter(
     private val dayTextViewId: Int,
     private val monthTextViewId: Int,
     private val selectedItemLayoutId: Int,
-    private val dayNameFormat: Int
+    private val dayNameFormat: Int,
+    private val weekendDateSpecialColor: Int,
+    private val weekendDaySpecialColor: Int
 ) :
 
     RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
 
-
     private val ITEM = 3
     private val SELECTED_ITEM = 5
 
+    private var baseDateTextColor: Int = 0
+    private var baseDayTextColor: Int = 0
 
     companion object {
         lateinit var selectionTracker: SelectionTracker<Long>
@@ -56,7 +61,7 @@ class SingleRowCalendarAdapter(
                 .inflate(itemLayoutId, parent, false)
         else
             LayoutInflater.from(parent.context)
-                    .inflate(selectedItemLayoutId, parent, false)
+                .inflate(selectedItemLayoutId, parent, false)
 
 
         return CalendarViewHolder(itemView)
@@ -64,20 +69,50 @@ class SingleRowCalendarAdapter(
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
 
+        if (baseDayTextColor == 0)
+            baseDayTextColor = holder.itemView.findViewById<TextView>(dayTextViewId).currentTextColor
+        if(baseDateTextColor == 0)
+            baseDateTextColor = holder.itemView.findViewById<TextView>(dateTextViewId).currentTextColor
+
+
+
+
         holder.itemView.findViewById<TextView>(dayTextViewId)?.text =
-            when(dayNameFormat){
+            when (dayNameFormat) {
                 1 -> DateHelper.getDay1LetterName(dateList[position])
                 3 -> DateHelper.getDay3LettersName(dateList[position])
                 0 -> DateHelper.getDayName(dateList[position])
                 else -> DateHelper.getDay3LettersName(dateList[position])
             }
 
+        if (weekendDateSpecialColor != 0) {
+            val cal = Calendar.getInstance()
+            cal.time = dateList[position]
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ||
+                cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+            )
+                holder.itemView.findViewById<TextView>(dateTextViewId)?.setTextColor(
+                    weekendDateSpecialColor
+                )
+            else
+                holder.itemView.findViewById<TextView>(dateTextViewId)?.setTextColor(baseDateTextColor)
+        }
+
+        if (weekendDaySpecialColor != 0) {
+            val cal = Calendar.getInstance()
+            cal.time = dateList[position]
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ||
+                cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                holder.itemView.findViewById<TextView>(dayTextViewId)?.setTextColor(weekendDaySpecialColor)
+            else
+                holder.itemView.findViewById<TextView>(dayTextViewId)?.setTextColor(baseDayTextColor)
+        }
+
         holder.itemView.findViewById<TextView>(dateTextViewId)?.text =
             DateHelper.getDayNumber(dateList[position])
 
         holder.itemView.findViewById<TextView>(monthTextViewId)?.text =
             DateHelper.getMonth3LettersName(dateList[position])
-
 
 
     }
