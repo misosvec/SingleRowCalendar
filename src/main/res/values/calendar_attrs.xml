@@ -17,7 +17,7 @@
         <attr name="multiSelection" format="boolean" />
         <attr name="disableUnselection" format="boolean" />
         <attr name="enableLongPress" format="boolean" />
-        <attr name="weekendDaySpecialColor" format="reference" />
-        <attr name="weekendDateSpecialColor" format="reference" />
+        <attr name="weekendItemLayoutId" format="reference" />
+        <attr name="weekendSelectedItemLayoutId" format="reference" />
     </declare-styleable>
 </resources>

@@ -77,16 +77,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 enableLongPress =
                     getBoolean(R.styleable.SingleRowCalendar_enableLongPress, false)
 
-                val weekendDateSpecialColor =
-                    getInt(R.styleable.SingleRowCalendar_weekendDateSpecialColor, 0)
 
-                val weekendDaySpecialColor =
-                    getInt(R.styleable.SingleRowCalendar_weekendDaySpecialColor, 0)
+                val weekendItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_weekendItemLayoutId, 0)
 
-
-
-
-
+                val weekendSelectedItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_weekendSelectedItemLayoutId, 0)
 
                 if (itemLayoutId != 0 && dateTextViewId != 0 && dayTextViewId != 0) {
                     init(
@@ -100,9 +94,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                         includeCurrentDate,
                         initialPositionIndex,
                         dayNameFormat,
-                        weekendDateSpecialColor,
-                        weekendDaySpecialColor
+                        weekendItemLayoutId,
+                        weekendSelectedItemLayoutId
                     )
+
                 }
             } finally {
                 recycle()
@@ -124,8 +119,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         includeCurrentDate: Boolean,
         initialScrollPosition: Int,
         dayNameFormat: Int,
-        weekendDateSpecialColor: Int,
-        weekendDaySpecialColor: Int
+        weekendItemLayoutId: Int,
+        weekendSelectedLayoutId: Int
     ) {
 
         this.apply {
@@ -134,15 +129,12 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
             val height = displayMetrics.heightPixels
             val width = displayMetrics.widthPixels
+
             dateList.clear()
             dateList.addAll(loadDates(pastDaysCount, futureDaysCount, includeCurrentDate))
 
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                initialScrollPosition,
-                0
-            )
-
+            (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(initialScrollPosition, 0)
 
             setHasFixedSize(true)
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
@@ -153,8 +145,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 monthTextViewId,
                 selectedItemLayoutId,
                 dayNameFormat,
-                weekendDateSpecialColor,
-                weekendDaySpecialColor
+                weekendItemLayoutId,
+                weekendSelectedLayoutId
             )
             adapter = singleRowCalendarAdapter
             initSelection()
@@ -178,7 +170,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                             DateHelper.getMonthName(dateList[lastVisibleItem]),
                             DateHelper.getYear(dateList[lastVisibleItem])
                         )
-
 
                     previousMonthNumber = DateHelper.getMonthNumber(dateList[lastVisibleItem])
                     previousYear = DateHelper.getYear(dateList[lastVisibleItem])
