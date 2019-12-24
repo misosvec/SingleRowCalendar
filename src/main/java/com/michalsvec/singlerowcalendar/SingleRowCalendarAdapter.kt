@@ -1,7 +1,5 @@
 package com.michalsvec.singlerowcalendar
 
-import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,12 +86,8 @@ class SingleRowCalendarAdapter(
         if (weekendDateSpecialColor != 0) {
             val cal = Calendar.getInstance()
             cal.time = dateList[position]
-            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ||
-                cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-            )
-                holder.itemView.findViewById<TextView>(dateTextViewId)?.setTextColor(
-                    weekendDateSpecialColor
-                )
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                holder.itemView.findViewById<TextView>(dateTextViewId)?.setTextColor(weekendDateSpecialColor)
             else
                 holder.itemView.findViewById<TextView>(dateTextViewId)?.setTextColor(baseDateTextColor)
         }
@@ -101,23 +95,21 @@ class SingleRowCalendarAdapter(
         if (weekendDaySpecialColor != 0) {
             val cal = Calendar.getInstance()
             cal.time = dateList[position]
-            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY ||
-                cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                 holder.itemView.findViewById<TextView>(dayTextViewId)?.setTextColor(weekendDaySpecialColor)
             else
                 holder.itemView.findViewById<TextView>(dayTextViewId)?.setTextColor(baseDayTextColor)
         }
 
-        holder.itemView.findViewById<TextView>(dateTextViewId)?.text =
-            DateHelper.getDayNumber(dateList[position])
+        holder.itemView.findViewById<TextView>(dateTextViewId)?.text = DateHelper.getDayNumber(dateList[position])
 
-        holder.itemView.findViewById<TextView>(monthTextViewId)?.text =
-            DateHelper.getMonth3LettersName(dateList[position])
+        holder.itemView.findViewById<TextView>(monthTextViewId)?.text = DateHelper.getMonth3LettersName(dateList[position])
 
 
     }
 
     override fun getItemCount() = dateList.size
+
 
     override fun getItemId(position: Int): Long = position.toLong()
 
