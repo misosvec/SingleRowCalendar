@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +16,6 @@ import java.util.*
 
 
 class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
-
 
 
     private val GHOST_ITEM_KEY = -999999999999999299
@@ -78,9 +78,11 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                     getBoolean(R.styleable.SingleRowCalendar_enableLongPress, false)
 
 
-                val weekendItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_weekendItemLayoutId, 0)
+                val weekendItemLayoutId =
+                    getResourceId(R.styleable.SingleRowCalendar_weekendItemLayoutId, 0)
 
-                val weekendSelectedItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_weekendSelectedItemLayoutId, 0)
+                val weekendSelectedItemLayoutId =
+                    getResourceId(R.styleable.SingleRowCalendar_weekendSelectedItemLayoutId, 0)
 
                 if (itemLayoutId != 0 && dateTextViewId != 0 && dayTextViewId != 0) {
                     init(
@@ -134,7 +136,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             dateList.addAll(loadDates(pastDaysCount, futureDaysCount, includeCurrentDate))
 
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(initialScrollPosition, 0)
+            (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                initialScrollPosition,
+                0
+            )
 
             setHasFixedSize(true)
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
@@ -220,12 +225,28 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
         }).build()
 
-        if(!enableLongPress)
+
+        if (!enableLongPress)
             disableLongPress()
 
-        selectionTracker.addObserver(object : SelectionTracker.SelectionObserver<Long>(){
+
+
+        selectionTracker.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
             override fun onItemStateChanged(key: Long, selected: Boolean) {
-                calendarChangesObserver?.whenSelectionChanged(selected, key.toInt(), dateList[key.toInt()])
+
+                Log.d("ffff", "long kye je $key a selecte je $selected")
+                if (key != GHOST_ITEM_KEY)
+                    calendarChangesObserver?.whenSelectionChanged(
+                        selected,
+                        key.toInt(),
+                        dateList[key.toInt()]
+                    )
+
+                if(selectionTracker.selection.size() == 0)
+                    disableLongPress()
+
+
+                Log.d("ffff", "lenght is ${selectionTracker.selection.size()}")
                 super.onItemStateChanged(key, selected)
 
             }
@@ -246,12 +267,14 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     }
 
 
-
     fun setCalendarChangesObserver(CalendarChangesObserver: CalendarChangesObserver) {
         this.calendarChangesObserver = CalendarChangesObserver
     }
 
-    private fun disableLongPress() = selectionTracker.select(GHOST_ITEM_KEY)
+    private fun disableLongPress() {
+        Log.d("dddd", "GHOST ITEM SELECTED")
+        selectionTracker.select(GHOST_ITEM_KEY)
+    }
 
 
     fun clearSelection() {
@@ -264,8 +287,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     fun select(position: Int) = selectionTracker.select(position.toLong())
 
     //WORKS
-    fun setItemsSelected(positionList: List<Int>, selected: Boolean){
-        val longList = positionList.map { it.toLong()}
+    fun setItemsSelected(positionList: List<Int>, selected: Boolean) {
+        val longList = positionList.map { it.toLong() }
         selectionTracker.setItemsSelected(longList, selected)
     }
 
@@ -275,7 +298,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     //WORKS
     fun isSelected(position: Int) = selectionTracker.isSelected(position.toLong())
 
-    //WORKS
+    //WORKS //TODO CHECK GHOST ITEM
     fun hasSelection(): Boolean = getSelectedIndexes().isNotEmpty()
 
     //WORKS
@@ -295,7 +318,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     }
 
     //WORKS
-    fun getSelectedIndexes() : List<Int>{
+    fun getSelectedIndexes(): List<Int> {
         val selectionList: MutableList<Int> = mutableListOf()
         selectionTracker.selection.forEach {
             if (it != GHOST_ITEM_KEY && it.toInt() < dateList.size)
@@ -303,10 +326,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         }
         return selectionList
     }
-
-
-
-
 
 
 }
