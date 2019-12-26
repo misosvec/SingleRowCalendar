@@ -40,6 +40,12 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     private var dayNameFormat: Int
     private var weekendItemLayoutId: Int
     private var weekendSelectedItemLayoutId: Int
+    private var firstSpecialItemLayoutId: Int
+    private var firstSelectedSpecialItemLayoutId: Int
+    private var secondSpecialItemLayoutId: Int
+    private var secondSelectedSpecialItemLayoutId: Int
+    private var thirdSpecialItemLayoutId: Int
+    private var thirdSelectedSpecialItemLayoutId: Int
 
     init {
         itemAnimator = null // this remove blinking when clicking items
@@ -62,6 +68,12 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 enableLongPress = getBoolean(R.styleable.SingleRowCalendar_enableLongPress, false)
                 weekendItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_weekendItemLayoutId, 0)
                 weekendSelectedItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_weekendSelectedItemLayoutId, 0)
+                firstSpecialItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_firstSpecialItemLayoutId, 0)
+                firstSelectedSpecialItemLayoutId =getResourceId(R.styleable.SingleRowCalendar_firstSelectedSpecialItemLayoutId, 0)
+                secondSpecialItemLayoutId =getResourceId(R.styleable.SingleRowCalendar_secondSpecialItemLayoutId, 0)
+                secondSelectedSpecialItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_secondSelectedSpecialItemLayoutId, 0)
+                thirdSpecialItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_thirdSpecialItemLayoutId, 0)
+                thirdSelectedSpecialItemLayoutId = getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialItemLayoutId, 0)
 
                 if (itemLayoutId != 0 && dateTextViewId != 0 && dayTextViewId != 0) {
                     init()

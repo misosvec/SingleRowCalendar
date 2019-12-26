@@ -19,5 +19,11 @@
         <attr name="enableLongPress" format="boolean" />
         <attr name="weekendItemLayoutId" format="reference" />
         <attr name="weekendSelectedItemLayoutId" format="reference" />
+        <attr name="firstSpecialItemLayoutId" format="reference" />
+        <attr name="firstSelectedSpecialItemLayoutId" format="reference" />
+        <attr name="secondSpecialItemLayoutId" format="reference" />
+        <attr name="secondSelectedSpecialItemLayoutId" format="reference" />
+        <attr name="thirdSpecialItemLayoutId" format="reference" />
+        <attr name="thirdSelectedSpecialItemLayoutId" format="reference" />
     </declare-styleable>
 </resources>
