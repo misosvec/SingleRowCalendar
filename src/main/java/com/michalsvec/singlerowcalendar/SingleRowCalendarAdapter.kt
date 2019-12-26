@@ -1,6 +1,5 @@
 package com.michalsvec.singlerowcalendar
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,13 @@ import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
+
+/**
+ * @author
+ * @param
+ * @
+ *
+ */
 
 class SingleRowCalendarAdapter(
     private val dateList: List<Date>,
@@ -34,6 +40,10 @@ class SingleRowCalendarAdapter(
         lateinit var selectionTracker: SelectionTracker<Long>
     }
 
+
+    /**
+     * This function is responsible for choosing right type of itemView, for example selectedItemView, weekendItemView, etc.
+     */
     override fun getItemViewType(position: Int): Int {
         val cal = Calendar.getInstance()
         cal.time = dateList[position]
@@ -65,6 +75,9 @@ class SingleRowCalendarAdapter(
             }
     }
 
+    /**
+     * This function is responsible for inflating right itemView layouts
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val itemView = when (viewType) {
             ITEM -> LayoutInflater.from(parent.context)
@@ -80,6 +93,10 @@ class SingleRowCalendarAdapter(
         return CalendarViewHolder(itemView)
     }
 
+
+    /**
+     * This function is responsible for binding data to itemView
+     */
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
 
         holder.itemView.findViewById<TextView>(dayTextViewId)?.text =
@@ -98,7 +115,12 @@ class SingleRowCalendarAdapter(
 
     }
 
+
+    /**
+     *
+     */
     override fun getItemCount() = dateList.size
+
 
     override fun getItemId(position: Int): Long = position.toLong()
 }
