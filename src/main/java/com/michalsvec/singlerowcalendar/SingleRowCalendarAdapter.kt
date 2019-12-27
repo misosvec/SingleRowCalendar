@@ -18,6 +18,9 @@ import java.util.*
 
 class SingleRowCalendarAdapter(
     private val dateList: List<Date>,
+    private val firstSpecialItemPositionList: List<Int>,
+    private val secondSpecialItemPositionList: List<Int>,
+    private val thirdSpecialItemPositionList: List<Int>,
     private val itemLayoutId: Int,
     private val dateTextViewId: Int,
     private val dayTextViewId: Int,
@@ -25,7 +28,14 @@ class SingleRowCalendarAdapter(
     private val selectedItemLayoutId: Int,
     private val dayNameFormat: Int,
     private val weekendItemLayout: Int,
-    private val weekendSelectedItemLayout: Int
+    private val weekendSelectedItemLayout: Int,
+    private val firstSpecialItemLayoutId: Int,
+    private var firstSelectedSpecialItemLayoutId: Int,
+    private var secondSpecialItemLayoutId: Int,
+    private var secondSelectedSpecialItemLayoutId: Int,
+    private var thirdSpecialItemLayoutId: Int,
+    private var thirdSelectedSpecialItemLayoutId: Int
+
 ) :
 
     RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
@@ -34,7 +44,12 @@ class SingleRowCalendarAdapter(
     private val SELECTED_ITEM = 5
     private val WEEKEND_ITEM = 8
     private val SELECTED_WEEKEND_ITEM = 11
-
+    private val FIRST_SPECIAL_ITEM = 14
+    private val FIRST_SELECTED_SPECIAL_ITEM = 17
+    private val SECOND_SPECIAL_ITEM = 21
+    private val SECOND_SELECTED_SPECIAL_ITEM = 24
+    private val THIRD_SPECIAL_ITEM = 27
+    private val THIRD_SELECTED_SPECIAL_ITEM = 30
 
     companion object {
         lateinit var selectionTracker: SelectionTracker<Long>
@@ -45,17 +60,34 @@ class SingleRowCalendarAdapter(
      * This function is responsible for choosing right type of itemView, for example selectedItemView, weekendItemView, etc.
      */
     override fun getItemViewType(position: Int): Int {
+
         val cal = Calendar.getInstance()
         cal.time = dateList[position]
-        return if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+
+        return if(!firstSpecialItemPositionList.isNullOrEmpty() && firstSpecialItemPositionList.contains(position))
+            if(selectionTracker.isSelected(position.toLong()))
+                FIRST_SELECTED_SPECIAL_ITEM
+            else
+                FIRST_SPECIAL_ITEM
+        else if(!secondSpecialItemPositionList.isNullOrEmpty() && secondSpecialItemPositionList.contains(position))
+            if(selectionTracker.isSelected(position.toLong()))
+                SECOND_SELECTED_SPECIAL_ITEM
+            else
+                SECOND_SPECIAL_ITEM
+        else if(!thirdSpecialItemPositionList.isNullOrEmpty() && thirdSpecialItemPositionList.contains(position))
+            if(selectionTracker.isSelected(position.toLong()))
+                THIRD_SELECTED_SPECIAL_ITEM
+            else
+                THIRD_SPECIAL_ITEM
+        else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
             if (selectedItemLayoutId != 0 && selectionTracker.isSelected(position.toLong()))
                 SELECTED_WEEKEND_ITEM
-            else if (weekendItemLayout != 0)
-                WEEKEND_ITEM
-            else if (selectionTracker.isSelected(position.toLong()))
-                SELECTED_ITEM
-            else
-                ITEM
+        else if (weekendItemLayout != 0)
+            WEEKEND_ITEM
+        else if (selectionTracker.isSelected(position.toLong()))
+            SELECTED_ITEM
+        else
+            ITEM
         else if (selectionTracker.isSelected(position.toLong()))
             SELECTED_ITEM
         else
@@ -86,6 +118,18 @@ class SingleRowCalendarAdapter(
                 .inflate(weekendItemLayout, parent, false)
             SELECTED_WEEKEND_ITEM -> LayoutInflater.from(parent.context)
                 .inflate(weekendSelectedItemLayout, parent, false)
+            FIRST_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(firstSpecialItemLayoutId, parent, false)
+            FIRST_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(firstSelectedSpecialItemLayoutId, parent, false)
+            SECOND_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(secondSpecialItemLayoutId, parent, false)
+            SECOND_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(secondSelectedSpecialItemLayoutId, parent, false)
+            THIRD_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(thirdSpecialItemLayoutId, parent, false)
+            THIRD_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(thirdSelectedSpecialItemLayoutId, parent, false)
             else -> LayoutInflater.from(parent.context)
                 .inflate(selectedItemLayoutId, parent, false)
         }
