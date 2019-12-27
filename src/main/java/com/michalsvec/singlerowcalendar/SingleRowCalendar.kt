@@ -25,7 +25,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     private var calendarChangesObserver: CalendarChangesObserver? = null
     val dateList: MutableList<Date> = mutableListOf()
     var firstSpecialItemPositionList: MutableList<Int> = mutableListOf()
-    val secondSpecialItemPositionList: MutableList<Int> = mutableListOf()
+    var secondSpecialItemPositionList: MutableList<Int> = mutableListOf()
     val thirdSpecialItemPositionList: MutableList<Int> = mutableListOf()
     private var previousMonthNumber = ""
     private var previousYear = ""
@@ -160,6 +160,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                         (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
 
+                    //TODO INDEX OUT OF BOUNDS 34 LENGHT INDEX 1
                     if (previousMonthNumber != DateHelper.getMonthNumber(dateList[lastVisibleItem]) ||
                         previousYear != DateHelper.getYear(dateList[lastVisibleItem])
                     )
@@ -227,7 +228,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         selectionTracker.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
             override fun onItemStateChanged(key: Long, selected: Boolean) {
 
-                if (key != GHOST_ITEM_KEY)
+                // todo druha cat podmienky
+                if (key != GHOST_ITEM_KEY && key.toInt()< dateList.size)
                     calendarChangesObserver?.whenSelectionChanged(
                         selected,
                         key.toInt(),
