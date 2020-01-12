@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.Log
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michalsvec.singlerowcalendar.selection.CalendarDetailsLookup
@@ -318,10 +319,13 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     }
 
 
-    fun changeDates(dateList: List<Date>){
-        this.dateList.clear()
-        this.dateList.addAll(dateList)
-        adapter!!.notifyDataSetChanged()
+    fun changeDates(newDateList: List<Date>){
+        val diffCallback = DateDiffCallback(dateList, newDateList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        dateList.clear()
+        dateList.addAll(newDateList)
+        if(adapter != null)
+            diffResult.dispatchUpdatesTo(adapter!!)
         if(scrollPosition>dateList.size -1)
             scrollPosition= dateList.size - 1
         scrollToPosition(scrollPosition)
@@ -330,8 +334,5 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             DateHelper.getMonthName(dateList[scrollPosition]),
             DateHelper.getYear(dateList[scrollPosition])
         )
-
     }
-
-
 }
