@@ -150,8 +150,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 
-                    scrollPosition =
-                        (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                    calendarChangesObserver?.whenCalendarScrolled(dx, dy)
+
+                    scrollPosition = (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
                     val lastVisibleItem = if (dx > 0)
                         (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
@@ -159,10 +160,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                         (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
 
-
                     if (previousMonthNumber != DateHelper.getMonthNumber(dateList[lastVisibleItem]) ||
-                        previousYear != DateHelper.getYear(dateList[lastVisibleItem])
-                    )
+                        previousYear != DateHelper.getYear(dateList[lastVisibleItem]))
+
                         calendarChangesObserver?.whenMonthAndYearChanged(
                             DateHelper.getMonthNumber(dateList[lastVisibleItem]),
                             DateHelper.getMonthName(dateList[lastVisibleItem]),
