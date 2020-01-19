@@ -28,8 +28,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     var firstSpecialItemPositionList: MutableList<Int> = mutableListOf()
     var secondSpecialItemPositionList: MutableList<Int> = mutableListOf()
     val thirdSpecialItemPositionList: MutableList<Int> = mutableListOf()
-    private var previousMonthNumber = ""
-    private var previousYear = ""
+    var previousMonthNumber = ""
+    var previousYear = ""
     var multiSelection: Boolean
     var disableUnselection: Boolean
     var enableLongPress: Boolean
@@ -51,8 +51,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     var secondSelectedSpecialItemLayoutId: Int
     var thirdSpecialItemLayoutId: Int
     var thirdSelectedSpecialItemLayoutId: Int
-
-    private var scrollPosition  = 0
+    var scrollPosition = 0
 
     init {
         itemAnimator = null // this remove blinking when clicking items
@@ -88,18 +87,13 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 secondSpecialItemLayoutId =
                     getResourceId(R.styleable.SingleRowCalendar_secondSpecialItemLayoutId, 0)
                 secondSelectedSpecialItemLayoutId = getResourceId(
-                    R.styleable.SingleRowCalendar_secondSelectedSpecialItemLayoutId,
-                    0
+                    R.styleable.SingleRowCalendar_secondSelectedSpecialItemLayoutId, 0
                 )
                 thirdSpecialItemLayoutId =
                     getResourceId(R.styleable.SingleRowCalendar_thirdSpecialItemLayoutId, 0)
                 thirdSelectedSpecialItemLayoutId =
                     getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialItemLayoutId, 0)
 
-//                if (itemLayoutId != 0 && dateTextViewId != 0 && dayTextViewId != 0) {
-//                    init()
-//
-//                }
             } finally {
                 recycle()
             }
@@ -108,16 +102,20 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
     }
 
-     fun init() {
+    fun init() {
 
         this.apply {
 
-            dateList.clear()
-            dateList.addAll(loadDates(pastDaysCount, futureDaysCount, includeCurrentDate))
+            if (dateList.isNullOrEmpty()) {
+                dateList.clear()
+                dateList.addAll(loadDates(pastDaysCount, futureDaysCount, includeCurrentDate))
+            }
+
 
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                initialPositionIndex, 0
+                initialPositionIndex,
+                0
             )
 
             setHasFixedSize(true)
@@ -148,12 +146,12 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             SingleRowCalendarAdapter.selectionTracker = selectionTracker
 
-            Log.d("wwwww", "init called")
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 
-                    scrollPosition = (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                    scrollPosition =
+                        (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
                     val lastVisibleItem = if (dx > 0)
                         (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
@@ -161,7 +159,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                         (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
 
-                    //TODO INDEX OUT OF BOUNDS 34 LENGHT INDEX 1
+
                     if (previousMonthNumber != DateHelper.getMonthNumber(dateList[lastVisibleItem]) ||
                         previousYear != DateHelper.getYear(dateList[lastVisibleItem])
                     )
@@ -230,7 +228,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             override fun onItemStateChanged(key: Long, selected: Boolean) {
 
                 // todo druha cat podmienky
-                if (key != GHOST_ITEM_KEY && key.toInt()< dateList.size)
+                if (key != GHOST_ITEM_KEY && key.toInt() < dateList.size)
                     calendarChangesObserver?.whenSelectionChanged(
                         selected,
                         key.toInt(),
@@ -319,15 +317,15 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     }
 
 
-    fun changeDates(newDateList: List<Date>){
+    fun changeDates(newDateList: List<Date>) {
         val diffCallback = DateDiffCallback(dateList, newDateList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         dateList.clear()
         dateList.addAll(newDateList)
-        if(adapter != null)
+        if (adapter != null)
             diffResult.dispatchUpdatesTo(adapter!!)
-        if(scrollPosition>dateList.size -1)
-            scrollPosition= dateList.size - 1
+        if (scrollPosition > dateList.size - 1)
+            scrollPosition = dateList.size - 1
         scrollToPosition(scrollPosition)
         calendarChangesObserver?.whenMonthAndYearChanged(
             DateHelper.getMonthNumber(dateList[scrollPosition]),
