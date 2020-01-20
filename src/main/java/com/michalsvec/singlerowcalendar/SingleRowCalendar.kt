@@ -3,7 +3,6 @@ package com.michalsvec.singlerowcalendar
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.DiffUtil
@@ -25,33 +24,40 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     private lateinit var selectionTracker: SelectionTracker<Long>
     private var calendarChangesObserver: CalendarChangesObserver? = null
     val dateList: MutableList<Date> = mutableListOf()
-    var firstSpecialItemPositionList: MutableList<Int> = mutableListOf()
-    var secondSpecialItemPositionList: MutableList<Int> = mutableListOf()
-    val thirdSpecialItemPositionList: MutableList<Int> = mutableListOf()
+    var firstSpecialViewPositionList: MutableList<Int> = mutableListOf()
+    var secondSpecialViewPositionList: MutableList<Int> = mutableListOf()
+    var thirdSpecialViewPositionList: MutableList<Int> = mutableListOf()
+    var fourthSpecialViewPositionList: MutableList<Int> = mutableListOf()
+    var fifthSpecialViewPositionList: MutableList<Int> = mutableListOf()
     var previousMonthNumber = ""
     var previousYear = ""
     var multiSelection: Boolean
-    var disableUnselection: Boolean
-    var enableLongPress: Boolean
-    var itemLayoutId: Int
+    var deselection: Boolean
+    var longPress: Boolean
+    var viewId: Int
     var dateTextViewId: Int
     var dayTextViewId: Int
     var monthTextViewId: Int
-    var selectedItemLayoutId: Int
+    var selectedViewId: Int
     var pastDaysCount: Int
     var futureDaysCount: Int
     var includeCurrentDate: Boolean
     var initialPositionIndex: Int
     var dayNameFormat: Int
-    var weekendItemLayoutId: Int
-    var weekendSelectedItemLayoutId: Int
-    var firstSpecialItemLayoutId: Int
-    var firstSelectedSpecialItemLayoutId: Int
-    var secondSpecialItemLayoutId: Int
-    var secondSelectedSpecialItemLayoutId: Int
-    var thirdSpecialItemLayoutId: Int
-    var thirdSelectedSpecialItemLayoutId: Int
-    var scrollPosition = 0
+    var weekendViewId: Int
+    var weekendSelectedViewId: Int
+    var firstSpecialViewId: Int
+    var firstSelectedSpecialViewId: Int
+    var secondSpecialViewId: Int
+    var secondSelectedSpecialViewId: Int
+    var thirdSpecialViewId: Int
+    var thirdSelectedSpecialViewId: Int
+    var fourthSpecialViewId: Int
+    var fourthSelectedSpecialViewId: Int
+    var fifthSpecialViewId: Int
+    var fifthSelectedSpecialViewId: Int
+    private var scrollPosition = 0
+
 
     init {
         itemAnimator = null // this remove blinking when clicking items
@@ -59,12 +65,12 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         context.theme.obtainStyledAttributes(attrs, R.styleable.SingleRowCalendar, 0, 0).apply {
 
             try {
-                itemLayoutId = getResourceId(R.styleable.SingleRowCalendar_itemLayoutId, 0)
+                viewId = getResourceId(R.styleable.SingleRowCalendar_viewId, 0)
                 dateTextViewId = getResourceId(R.styleable.SingleRowCalendar_dateTextViewId, 0)
                 dayTextViewId = getResourceId(R.styleable.SingleRowCalendar_dayTextViewId, 0)
                 monthTextViewId = getResourceId(R.styleable.SingleRowCalendar_monthTextViewId, 0)
-                selectedItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_selectedItemLayoutId, 0)
+                selectedViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_selectedViewId, 0)
                 pastDaysCount = getInt(R.styleable.SingleRowCalendar_pastDaysCount, 0)
                 futureDaysCount = getInt(R.styleable.SingleRowCalendar_futureDaysCount, 30)
                 includeCurrentDate =
@@ -73,26 +79,35 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                     getInt(R.styleable.SingleRowCalendar_initialPositionIndex, pastDaysCount)
                 dayNameFormat = getInt(R.styleable.SingleRowCalendar_dayNameFormat, 3)
                 multiSelection = getBoolean(R.styleable.SingleRowCalendar_multiSelection, false)
-                disableUnselection =
-                    getBoolean(R.styleable.SingleRowCalendar_disableUnselection, true)
-                enableLongPress = getBoolean(R.styleable.SingleRowCalendar_enableLongPress, false)
-                weekendItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_weekendItemLayoutId, 0)
-                weekendSelectedItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_weekendSelectedItemLayoutId, 0)
-                firstSpecialItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_firstSpecialItemLayoutId, 0)
-                firstSelectedSpecialItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_firstSelectedSpecialItemLayoutId, 0)
-                secondSpecialItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_secondSpecialItemLayoutId, 0)
-                secondSelectedSpecialItemLayoutId = getResourceId(
-                    R.styleable.SingleRowCalendar_secondSelectedSpecialItemLayoutId, 0
+                deselection =
+                    getBoolean(R.styleable.SingleRowCalendar_deselection, true)
+                longPress = getBoolean(R.styleable.SingleRowCalendar_longPress, false)
+                weekendViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_weekendViewId, 0)
+                weekendSelectedViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_weekendSelectedViewId, 0)
+                firstSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_firstSpecialViewId, 0)
+                firstSelectedSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_firstSelectedSpecialViewId, 0)
+                secondSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_secondSpecialViewId, 0)
+                secondSelectedSpecialViewId = getResourceId(
+                    R.styleable.SingleRowCalendar_secondSelectedSpecialViewId, 0
                 )
-                thirdSpecialItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSpecialItemLayoutId, 0)
-                thirdSelectedSpecialItemLayoutId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialItemLayoutId, 0)
+                thirdSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_thirdSpecialViewId, 0)
+                thirdSelectedSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialViewId, 0)
+
+                fourthSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_thirdSpecialViewId, 0)
+                fourthSelectedSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialViewId, 0)
+                fifthSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_thirdSpecialViewId, 0)
+                fifthSelectedSpecialViewId =
+                    getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialViewId, 0)
 
             } finally {
                 recycle()
@@ -122,23 +137,29 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
                 dateList,
-                firstSpecialItemPositionList,
-                secondSpecialItemPositionList,
-                thirdSpecialItemPositionList,
-                itemLayoutId,
+                firstSpecialViewPositionList,
+                secondSpecialViewPositionList,
+                thirdSpecialViewPositionList,
+                fourthSpecialViewPositionList,
+                fifthSpecialViewPositionList,
+                viewId,
                 dateTextViewId,
                 dayTextViewId,
                 monthTextViewId,
-                selectedItemLayoutId,
+                selectedViewId,
                 dayNameFormat,
-                weekendItemLayoutId,
-                weekendSelectedItemLayoutId,
-                firstSpecialItemLayoutId,
-                firstSelectedSpecialItemLayoutId,
-                secondSpecialItemLayoutId,
-                secondSelectedSpecialItemLayoutId,
-                thirdSpecialItemLayoutId,
-                thirdSelectedSpecialItemLayoutId
+                weekendViewId,
+                weekendSelectedViewId,
+                firstSpecialViewId,
+                firstSelectedSpecialViewId,
+                secondSpecialViewId,
+                secondSelectedSpecialViewId,
+                thirdSpecialViewId,
+                thirdSelectedSpecialViewId,
+                fourthSpecialViewId,
+                fourthSelectedSpecialViewId,
+                fifthSpecialViewId,
+                fifthSelectedSpecialViewId
             )
 
             adapter = singleRowCalendarAdapter
@@ -152,7 +173,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
                     calendarChangesObserver?.whenCalendarScrolled(dx, dy)
 
-                    scrollPosition = (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                    scrollPosition =
+                        (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
                     val lastVisibleItem = if (dx > 0)
                         (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
@@ -161,7 +183,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
 
                     if (previousMonthNumber != DateHelper.getMonthNumber(dateList[lastVisibleItem]) ||
-                        previousYear != DateHelper.getYear(dateList[lastVisibleItem]))
+                        previousYear != DateHelper.getYear(dateList[lastVisibleItem])
+                    )
 
                         calendarChangesObserver?.whenMonthAndYearChanged(
                             DateHelper.getMonthNumber(dateList[lastVisibleItem]),
@@ -198,9 +221,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             }
 
             override fun canSetStateAtPosition(position: Int, nextState: Boolean): Boolean =
-                if (disableUnselection)
+                if (deselection)
                     if (nextState)
-                        disableUnselection
+                        deselection
                     else
                         false
                 else
@@ -208,9 +231,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
 
             override fun canSetStateForKey(key: Long, nextState: Boolean): Boolean =
-                if (disableUnselection)
+                if (deselection)
                     if (nextState)
-                        disableUnselection
+                        deselection
                     else
                         false
                 else
@@ -219,7 +242,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         }).build()
 
 
-        if (!enableLongPress)
+        if (!longPress)
             disableLongPress()
 
 
@@ -268,7 +291,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
     fun clearSelection() {
         selectionTracker.clearSelection()
-        if (!enableLongPress)
+        if (!longPress)
             disableLongPress()
     }
 
@@ -333,4 +356,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             DateHelper.getYear(dateList[scrollPosition])
         )
     }
+
+
 }

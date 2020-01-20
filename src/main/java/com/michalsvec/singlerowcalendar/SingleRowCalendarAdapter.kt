@@ -18,23 +18,29 @@ import java.util.*
 
 class SingleRowCalendarAdapter(
     private val dateList: List<Date>,
-    private val firstSpecialItemPositionList: List<Int>,
-    private val secondSpecialItemPositionList: List<Int>,
-    private val thirdSpecialItemPositionList: List<Int>,
-    private val itemLayoutId: Int,
+    private val firstSpecialViewPositionList: List<Int>,
+    private val secondSpecialViewPositionList: List<Int>,
+    private val thirdSpecialViewPositionList: List<Int>,
+    private val fourthSpecialViewPositionList: List<Int>,
+    private val fifthSpecialViewPositionList: List<Int>,
+    private val viewId: Int,
     private val dateTextViewId: Int,
     private val dayTextViewId: Int,
     private val monthTextViewId: Int,
-    private val selectedItemLayoutId: Int,
+    private val selectedViewId: Int,
     private val dayNameFormat: Int,
-    private val weekendItemLayout: Int,
-    private val weekendSelectedItemLayout: Int,
-    private val firstSpecialItemLayoutId: Int,
-    private var firstSelectedSpecialItemLayoutId: Int,
-    private var secondSpecialItemLayoutId: Int,
-    private var secondSelectedSpecialItemLayoutId: Int,
-    private var thirdSpecialItemLayoutId: Int,
-    private var thirdSelectedSpecialItemLayoutId: Int
+    private val weekendView: Int,
+    private val weekendSelectedViewId: Int,
+    private val firstSpecialViewId: Int,
+    private var firstSelectedSpecialViewId: Int,
+    private var secondSpecialViewId: Int,
+    private var secondSelectedSpecialViewId: Int,
+    private var thirdSpecialViewId: Int,
+    private var thirdSelectedSpecialViewId: Int,
+    private var fourthSpecialViewId: Int,
+    private var fourthSelectedSpecialViewId: Int,
+    private var fifthSpecialViewId: Int,
+    private var fifthSelectedSpecialViewId: Int
 
 ) :
 
@@ -50,6 +56,10 @@ class SingleRowCalendarAdapter(
     private val SECOND_SELECTED_SPECIAL_ITEM = 24
     private val THIRD_SPECIAL_ITEM = 27
     private val THIRD_SELECTED_SPECIAL_ITEM = 30
+    private val FOURTH_SPECIAL_ITEM = 33
+    private val FOURTH_SELECTED_SPECIAL_ITEM = 36
+    private val FIFTH_SPECIAL_ITEM = 39
+    private val FIFTH_SELECTED_SPECIAL_ITEM = 42
 
     companion object {
         lateinit var selectionTracker: SelectionTracker<Long>
@@ -64,25 +74,35 @@ class SingleRowCalendarAdapter(
         val cal = Calendar.getInstance()
         cal.time = dateList[position]
 
-        return if(!firstSpecialItemPositionList.isNullOrEmpty() && firstSpecialItemPositionList.contains(position))
+        return if(!firstSpecialViewPositionList.isNullOrEmpty() && firstSpecialViewPositionList.contains(position))
             if(selectionTracker.isSelected(position.toLong()))
                 FIRST_SELECTED_SPECIAL_ITEM
             else
                 FIRST_SPECIAL_ITEM
-        else if(!secondSpecialItemPositionList.isNullOrEmpty() && secondSpecialItemPositionList.contains(position))
+        else if(!secondSpecialViewPositionList.isNullOrEmpty() && secondSpecialViewPositionList.contains(position))
             if(selectionTracker.isSelected(position.toLong()))
                 SECOND_SELECTED_SPECIAL_ITEM
             else
                 SECOND_SPECIAL_ITEM
-        else if(!thirdSpecialItemPositionList.isNullOrEmpty() && thirdSpecialItemPositionList.contains(position))
+        else if(!thirdSpecialViewPositionList.isNullOrEmpty() && thirdSpecialViewPositionList.contains(position))
             if(selectionTracker.isSelected(position.toLong()))
                 THIRD_SELECTED_SPECIAL_ITEM
             else
                 THIRD_SPECIAL_ITEM
+        else if(!fourthSpecialViewPositionList.isNullOrEmpty() && fourthSpecialViewPositionList.contains(position))
+            if(selectionTracker.isSelected(position.toLong()))
+                FOURTH_SELECTED_SPECIAL_ITEM
+            else
+                FOURTH_SPECIAL_ITEM
+        else if(!fifthSpecialViewPositionList.isNullOrEmpty() && fifthSpecialViewPositionList.contains(position))
+            if(selectionTracker.isSelected(position.toLong()))
+                FIFTH_SELECTED_SPECIAL_ITEM
+            else
+                FIFTH_SPECIAL_ITEM
         else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-            if (selectedItemLayoutId != 0 && selectionTracker.isSelected(position.toLong()))
+            if (selectedViewId != 0 && selectionTracker.isSelected(position.toLong()))
                 SELECTED_WEEKEND_ITEM
-        else if (weekendItemLayout != 0)
+        else if (weekendView != 0)
             WEEKEND_ITEM
         else if (selectionTracker.isSelected(position.toLong()))
             SELECTED_ITEM
@@ -113,25 +133,33 @@ class SingleRowCalendarAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val itemView = when (viewType) {
             ITEM -> LayoutInflater.from(parent.context)
-                .inflate(itemLayoutId, parent, false)
+                .inflate(viewId, parent, false)
             WEEKEND_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(weekendItemLayout, parent, false)
+                .inflate(weekendView, parent, false)
             SELECTED_WEEKEND_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(weekendSelectedItemLayout, parent, false)
+                .inflate(weekendSelectedViewId, parent, false)
             FIRST_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(firstSpecialItemLayoutId, parent, false)
+                .inflate(firstSpecialViewId, parent, false)
             FIRST_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(firstSelectedSpecialItemLayoutId, parent, false)
+                .inflate(firstSelectedSpecialViewId, parent, false)
             SECOND_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(secondSpecialItemLayoutId, parent, false)
+                .inflate(secondSpecialViewId, parent, false)
             SECOND_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(secondSelectedSpecialItemLayoutId, parent, false)
+                .inflate(secondSelectedSpecialViewId, parent, false)
             THIRD_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(thirdSpecialItemLayoutId, parent, false)
+                .inflate(thirdSpecialViewId, parent, false)
             THIRD_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
-                .inflate(thirdSelectedSpecialItemLayoutId, parent, false)
+                .inflate(thirdSelectedSpecialViewId, parent, false)
+            FOURTH_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(fourthSpecialViewId, parent, false)
+            FOURTH_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(fourthSelectedSpecialViewId, parent, false)
+            FIFTH_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(fifthSpecialViewId, parent, false)
+            FIFTH_SELECTED_SPECIAL_ITEM -> LayoutInflater.from(parent.context)
+                .inflate(fifthSelectedSpecialViewId, parent, false)
             else -> LayoutInflater.from(parent.context)
-                .inflate(selectedItemLayoutId, parent, false)
+                .inflate(selectedViewId, parent, false)
         }
 
         return CalendarViewHolder(itemView)
