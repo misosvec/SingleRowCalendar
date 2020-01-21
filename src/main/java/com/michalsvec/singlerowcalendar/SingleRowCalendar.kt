@@ -24,39 +24,21 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     private lateinit var selectionTracker: SelectionTracker<Long>
     private var calendarChangesObserver: CalendarChangesObserver? = null
     val dateList: MutableList<Date> = mutableListOf()
-    var firstSpecialViewPositionList: MutableList<Int> = mutableListOf()
-    var secondSpecialViewPositionList: MutableList<Int> = mutableListOf()
-    var thirdSpecialViewPositionList: MutableList<Int> = mutableListOf()
-    var fourthSpecialViewPositionList: MutableList<Int> = mutableListOf()
-    var fifthSpecialViewPositionList: MutableList<Int> = mutableListOf()
     var previousMonthNumber = ""
     var previousYear = ""
     var multiSelection: Boolean
     var deselection: Boolean
     var longPress: Boolean
-    var viewId: Int
     var dateTextViewId: Int
     var dayTextViewId: Int
     var monthTextViewId: Int
-    var selectedViewId: Int
     var pastDaysCount: Int
     var futureDaysCount: Int
     var includeCurrentDate: Boolean
     var initialPositionIndex: Int
     var dayNameFormat: Int
-    var weekendViewId: Int
-    var weekendSelectedViewId: Int
-    var firstSpecialViewId: Int
-    var firstSelectedSpecialViewId: Int
-    var secondSpecialViewId: Int
-    var secondSelectedSpecialViewId: Int
-    var thirdSpecialViewId: Int
-    var thirdSelectedSpecialViewId: Int
-    var fourthSpecialViewId: Int
-    var fourthSelectedSpecialViewId: Int
-    var fifthSpecialViewId: Int
-    var fifthSelectedSpecialViewId: Int
     private var scrollPosition = 0
+    lateinit var calendarViewType : CalendarViewType
 
 
     init {
@@ -65,12 +47,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         context.theme.obtainStyledAttributes(attrs, R.styleable.SingleRowCalendar, 0, 0).apply {
 
             try {
-                viewId = getResourceId(R.styleable.SingleRowCalendar_viewId, 0)
                 dateTextViewId = getResourceId(R.styleable.SingleRowCalendar_dateTextViewId, 0)
                 dayTextViewId = getResourceId(R.styleable.SingleRowCalendar_dayTextViewId, 0)
                 monthTextViewId = getResourceId(R.styleable.SingleRowCalendar_monthTextViewId, 0)
-                selectedViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_selectedViewId, 0)
+
                 pastDaysCount = getInt(R.styleable.SingleRowCalendar_pastDaysCount, 0)
                 futureDaysCount = getInt(R.styleable.SingleRowCalendar_futureDaysCount, 30)
                 includeCurrentDate =
@@ -82,32 +62,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 deselection =
                     getBoolean(R.styleable.SingleRowCalendar_deselection, true)
                 longPress = getBoolean(R.styleable.SingleRowCalendar_longPress, false)
-                weekendViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_weekendViewId, 0)
-                weekendSelectedViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_weekendSelectedViewId, 0)
-                firstSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_firstSpecialViewId, 0)
-                firstSelectedSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_firstSelectedSpecialViewId, 0)
-                secondSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_secondSpecialViewId, 0)
-                secondSelectedSpecialViewId = getResourceId(
-                    R.styleable.SingleRowCalendar_secondSelectedSpecialViewId, 0
-                )
-                thirdSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSpecialViewId, 0)
-                thirdSelectedSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialViewId, 0)
-
-                fourthSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSpecialViewId, 0)
-                fourthSelectedSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialViewId, 0)
-                fifthSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSpecialViewId, 0)
-                fifthSelectedSpecialViewId =
-                    getResourceId(R.styleable.SingleRowCalendar_thirdSelectedSpecialViewId, 0)
 
             } finally {
                 recycle()
@@ -137,29 +91,12 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             val singleRowCalendarAdapter = SingleRowCalendarAdapter(
                 dateList,
-                firstSpecialViewPositionList,
-                secondSpecialViewPositionList,
-                thirdSpecialViewPositionList,
-                fourthSpecialViewPositionList,
-                fifthSpecialViewPositionList,
-                viewId,
                 dateTextViewId,
                 dayTextViewId,
                 monthTextViewId,
-                selectedViewId,
                 dayNameFormat,
-                weekendViewId,
-                weekendSelectedViewId,
-                firstSpecialViewId,
-                firstSelectedSpecialViewId,
-                secondSpecialViewId,
-                secondSelectedSpecialViewId,
-                thirdSpecialViewId,
-                thirdSelectedSpecialViewId,
-                fourthSpecialViewId,
-                fourthSelectedSpecialViewId,
-                fifthSpecialViewId,
-                fifthSelectedSpecialViewId
+                calendarViewType
+
             )
 
             adapter = singleRowCalendarAdapter

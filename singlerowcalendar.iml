@@ -26,7 +26,7 @@
       </configuration>
     </facet>
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/src/debug/kotlin;/Users/michalsvec/projects/native/LibExample/SingleRowCalendar/src/debug/java;/Users/michalsvec/projects/native/LibExample/SingleRowCalendar/src/release/kotlin;/Users/michalsvec/projects/native/LibExample/SingleRowCalendar/src/release/java;/Users/michalsvec/projects/native/LibExample/SingleRowCalendar/src/debugAndroidTest/kotlin;/Users/michalsvec/projects/native/LibExample/SingleRowCalendar/src/debugUnitTest/kotlin;/Users/michalsvec/projects/native/LibExample/SingleRowCalendar/src/releaseUnitTest/kotlin">
+      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false">
         <compilerSettings>
           <option name="additionalArguments" value="-Xallow-no-source-files" />
         </compilerSettings>
