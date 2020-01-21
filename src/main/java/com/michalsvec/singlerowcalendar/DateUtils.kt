@@ -3,11 +3,12 @@ package com.michalsvec.singlerowcalendar
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 /**
- * @author
+ * @author Michal Švec
+ * @since v1.0.0
  */
-object DateHelper {
+
+object DateUtils {
 
     /**
      * @param date - which we want full name from

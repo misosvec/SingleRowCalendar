@@ -12,6 +12,10 @@ import com.michalsvec.singlerowcalendar.selection.CalendarDetailsLookup
 import com.michalsvec.singlerowcalendar.selection.CalendarKeyProvider
 import java.util.*
 
+/**
+ * @author Michal Švec
+ * @since v1.0.0
+ */
 
 class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
 
@@ -36,9 +40,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     var futureDaysCount: Int
     var includeCurrentDate: Boolean
     var initialPositionIndex: Int
-    var dayNameFormat: Int
     private var scrollPosition = 0
-    lateinit var calendarViewType : CalendarViewType
+    lateinit var calendarViewType: CalendarViewManager
 
 
     init {
@@ -50,25 +53,19 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 dateTextViewId = getResourceId(R.styleable.SingleRowCalendar_dateTextViewId, 0)
                 dayTextViewId = getResourceId(R.styleable.SingleRowCalendar_dayTextViewId, 0)
                 monthTextViewId = getResourceId(R.styleable.SingleRowCalendar_monthTextViewId, 0)
-
                 pastDaysCount = getInt(R.styleable.SingleRowCalendar_pastDaysCount, 0)
                 futureDaysCount = getInt(R.styleable.SingleRowCalendar_futureDaysCount, 30)
                 includeCurrentDate =
                     getBoolean(R.styleable.SingleRowCalendar_includeCurrentDate, true)
                 initialPositionIndex =
                     getInt(R.styleable.SingleRowCalendar_initialPositionIndex, pastDaysCount)
-                dayNameFormat = getInt(R.styleable.SingleRowCalendar_dayNameFormat, 3)
                 multiSelection = getBoolean(R.styleable.SingleRowCalendar_multiSelection, false)
-                deselection =
-                    getBoolean(R.styleable.SingleRowCalendar_deselection, true)
+                deselection = getBoolean(R.styleable.SingleRowCalendar_deselection, true)
                 longPress = getBoolean(R.styleable.SingleRowCalendar_longPress, false)
-
             } finally {
                 recycle()
             }
         }
-
-
     }
 
     fun init() {
@@ -89,15 +86,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             setHasFixedSize(true)
 
-            val singleRowCalendarAdapter = SingleRowCalendarAdapter(
-                dateList,
-                dateTextViewId,
-                dayTextViewId,
-                monthTextViewId,
-                dayNameFormat,
-                calendarViewType
-
-            )
+            val singleRowCalendarAdapter = SingleRowCalendarAdapter(dateList, calendarViewType)
 
             adapter = singleRowCalendarAdapter
             initSelection()
@@ -118,19 +107,17 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                     else
                         (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
-
-                    if (previousMonthNumber != DateHelper.getMonthNumber(dateList[lastVisibleItem]) ||
-                        previousYear != DateHelper.getYear(dateList[lastVisibleItem])
-                    )
+                    if (previousMonthNumber != DateUtils.getMonthNumber(dateList[lastVisibleItem]) || previousYear != DateUtils.getYear(dateList[lastVisibleItem]))
 
                         calendarChangesObserver?.whenMonthAndYearChanged(
-                            DateHelper.getMonthNumber(dateList[lastVisibleItem]),
-                            DateHelper.getMonthName(dateList[lastVisibleItem]),
-                            DateHelper.getYear(dateList[lastVisibleItem])
+                            DateUtils.getMonthNumber(dateList[lastVisibleItem]),
+                            DateUtils.getMonthName(dateList[lastVisibleItem]),
+                            DateUtils.getYear(dateList[lastVisibleItem]),
+                            dateList[lastVisibleItem]
                         )
 
-                    previousMonthNumber = DateHelper.getMonthNumber(dateList[lastVisibleItem])
-                    previousYear = DateHelper.getYear(dateList[lastVisibleItem])
+                    previousMonthNumber = DateUtils.getMonthNumber(dateList[lastVisibleItem])
+                    previousYear = DateUtils.getYear(dateList[lastVisibleItem])
                 }
             })
         }
@@ -138,9 +125,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
 
     private fun loadDates(pastDays: Int, futureDays: Int, includeCurrentDate: Boolean): List<Date> {
-        val futureList = DateHelper.getFutureDates(futureDays)
+        val futureList = DateUtils.getFutureDates(futureDays)
         val cal = Calendar.getInstance(Locale.getDefault())
-        val pastList = DateHelper.getPastDates(pastDays).reversed()
+        val pastList = DateUtils.getPastDates(pastDays).reversed()
         return if (includeCurrentDate) pastList + cal.time + futureList else pastList + futureList
     }
 
@@ -288,11 +275,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             scrollPosition = dateList.size - 1
         scrollToPosition(scrollPosition)
         calendarChangesObserver?.whenMonthAndYearChanged(
-            DateHelper.getMonthNumber(dateList[scrollPosition]),
-            DateHelper.getMonthName(dateList[scrollPosition]),
-            DateHelper.getYear(dateList[scrollPosition])
+            DateUtils.getMonthNumber(dateList[scrollPosition]),
+            DateUtils.getMonthName(dateList[scrollPosition]),
+            DateUtils.getYear(dateList[scrollPosition]),
+            dateList[scrollPosition]
         )
     }
-
-
 }

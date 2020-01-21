@@ -2,40 +2,23 @@ package com.michalsvec.singlerowcalendar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 /**
- * @author
- * @param
- * @
- *
+ * @author Michal Švec
+ * @since v1.0.0
  */
 
-class SingleRowCalendarAdapter(
-    private val dateList: List<Date>,
-    private val dateTextViewId: Int,
-    private val dayTextViewId: Int,
-    private val monthTextViewId: Int,
-    private val dayNameFormat: Int,
-    private var calendarViewType: CalendarViewType
-
-) :
-
-    RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
-
+class SingleRowCalendarAdapter(private val dateList: List<Date>, private var calendarViewManager: CalendarViewManager) : RecyclerView.Adapter<SingleRowCalendarAdapter.CalendarViewHolder>() {
 
     companion object {
         lateinit var selectionTracker: SelectionTracker<Long>
     }
 
 
-    /**
-     * This function is responsible for choosing right type of itemView, for example selectedItemView, weekendItemView, etc.
-     */
     override fun getItemViewType(position: Int): Int {
         return if (selectionTracker.isSelected(position.toLong())){
             // when item is selected,position will have negative value + 1
@@ -65,12 +48,12 @@ class SingleRowCalendarAdapter(
 
         val viewId =  if(position < 0)
             // when position is negative, item is selected and then we have to take position back to original state
-            calendarViewType.calendarViewId(
+            calendarViewManager.setCalendarViewResourceId(
                 (position * -1) -1,
                 true
             )
         else
-            calendarViewType.calendarViewId(
+            calendarViewManager.setCalendarViewResourceId(
                 position,
                 false
             )
@@ -85,23 +68,8 @@ class SingleRowCalendarAdapter(
     /**
      * This function is responsible for binding data to itemView
      */
-    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-
-        holder.itemView.findViewById<TextView>(dayTextViewId)?.text =
-            when (dayNameFormat) {
-                1 -> DateHelper.getDay1LetterName(dateList[position])
-                3 -> DateHelper.getDay3LettersName(dateList[position])
-                0 -> DateHelper.getDayName(dateList[position])
-                else -> DateHelper.getDay3LettersName(dateList[position])
-            }
-
-        holder.itemView.findViewById<TextView>(dateTextViewId)?.text =
-            DateHelper.getDayNumber(dateList[position])
-
-        holder.itemView.findViewById<TextView>(monthTextViewId)?.text =
-            DateHelper.getMonth3LettersName(dateList[position])
-
-    }
+    override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) =
+        calendarViewManager.bindDataToCalendarView(holder, dateList[position], position, selectionTracker.isSelected(position.toLong()))
 
 
     /**
