@@ -6,12 +6,13 @@
 
 
 ## Features
-* you can choose between SINGLE or MULTIPLE SELECTION, also if you want you can set LONG PRESS TO START SELECTION
+* single selection
+* multiple selection
+* enable/disable long press to start selection
+* enable/disable deselection
 * you can easily set count of dates in past or future, or you can provide your own
-* you can set initial position in your list
+* initial position
 * you can choose between three types of displaying days, for example F,Fri,Friday
-* you can provide different item layout fo weekends
-* you can use up to three special items in calendar
 * you can easily observe for changes in selection
 * you can programatically deselect and select items
 * you can check if item is selected, set selection and clear selection
@@ -65,16 +66,7 @@ singleRowCalendar.apply {
 
 ## Customization and more attributes
 
-* ```itemLayoutId```
-  * reference for basic calendar item layout
-* ```dateTextViewId```
-  * id of TextView which displaying date in calendar item
-* ```dayTextViewId```
-  * id of TextView which displaying day abbrevation in calendar item
-* ```monthTextViewId```
-  * id of TextView which displaying month in calendar item
-* ```selectedItemLayoutId```
-  * reference for basic selected calendar item layout    
+
 * ```pastDaysCount```
   * number of days in past displayed in calednar
 * ```futureDaysCount```
@@ -91,36 +83,10 @@ singleRowCalendar.apply {
     * fullName - for example Friday, Monday
 * ```multiSelection```
   * enable or disable multi selection
-* ```disableUnselection```
+* ```deselection```
   * disable unselection 
-* ```enableLongPress```
+* ```longPress```
   * first selected item starts with long press
-* ```weekendItemLayoutId```
-  * reference for weekend calendar item layout which is displayed at weekends 
-* ```weekendSelectedItemLayoutId```
-  * reference for weekend selected calendar item layout which is displayed at weekends 
-* ```firstSpecialItemLayoutId```
-  * reference for first special calendar item layout which is according ```firstSpecialItemPositionList```
-* ```firstSelectedSpecialItemLayoutId```
-  * reference for first special selected calendar item layout which is displayed when first special item is selected
-* ```secondSpecialItemLayoutId```
-  * reference for second special calendar item layout which is according ```secondSpecialItemPositionList```
-* ```secondSelectedSpecialItemLayoutId```
-  * reference for second special selected calendar item layout which is displayed when second special item is selected
-* ```thirdSpecialItemLayoutId```
-  * reference for third special calendar item layout which is according ```thirdSpecialItemPositionList```
-* ```thirdSelectedSpecialItemLayoutId```
-  * reference for third special selected calendar item layout which is displayed when third special item is selected
-* ```firstSpecialItemPositionList```
-  * positions which are defining where ```firstSpecialItemLayoutId``` and ```firstSelectedSpecialItemLayoutId``` will be displayed
-* ```secondSpecialItemPositionList```
-  * positions which are defining where ```secondSpecialItemLayoutId``` and ```secondSelectedSpecialItemLayoutId``` will be displayed
-* ```thirdSpecialItemPositionList```
-  * position which are defining where ```thirdSpecialItemLayoutId``` and ```thirdSelectedSpecialItemLayoutId``` will be displayed
-
-
-
-        
 
         
         
