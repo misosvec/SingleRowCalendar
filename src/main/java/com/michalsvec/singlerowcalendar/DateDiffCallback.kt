@@ -23,10 +23,6 @@ class DateDiffCallback(private val oldDateList: List<Date>, private val newDateL
 
     override fun getNewListSize(): Int = newDateList.size
 
-    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? =
-        super.getChangePayload(oldItemPosition, newItemPosition)
-
-
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldCal = Calendar.getInstance()
         val newCal = Calendar.getInstance()

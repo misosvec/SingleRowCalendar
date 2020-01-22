@@ -1,33 +1,11 @@
 <resources>
     <declare-styleable name="SingleRowCalendar">
-        <attr name="viewId" format="reference" />
-        <attr name="dateTextViewId" format="reference" />
-        <attr name="dayTextViewId" format="reference" />
-        <attr name="monthTextViewId" format="reference" />
-        <attr name="selectedViewId" format="reference" />
         <attr name="pastDaysCount" format="integer" />
         <attr name="futureDaysCount" format="integer" />
         <attr name="includeCurrentDate" format="boolean" />
         <attr name="initialPositionIndex" format="integer" />
-        <attr name="dayNameFormat" format="enum">
-            <enum name="threeLetters" value="3"/>
-            <enum name="oneLetter" value="1"/>
-            <enum name="fullName" value="0"/>
-        </attr>
         <attr name="multiSelection" format="boolean" />
         <attr name="deselection" format="boolean" />
         <attr name="longPress" format="boolean" />
-        <attr name="weekendViewId" format="reference" />
-        <attr name="weekendSelectedViewId" format="reference" />
-        <attr name="firstSpecialViewId" format="reference" />
-        <attr name="firstSelectedSpecialViewId" format="reference" />
-        <attr name="secondSpecialViewId" format="reference" />
-        <attr name="secondSelectedSpecialViewId" format="reference" />
-        <attr name="thirdSpecialViewId" format="reference" />
-        <attr name="thirdSelectedSpecialViewId" format="reference" />
-        <attr name="fourthSpecialViewId" format="reference" />
-        <attr name="fourthSelectedSpecialViewId" format="reference" />
-        <attr name="fifthSpecialViewId" format="reference" />
-        <attr name="fifthSelectedSpecialViewId" format="reference" />
     </declare-styleable>
 </resources>

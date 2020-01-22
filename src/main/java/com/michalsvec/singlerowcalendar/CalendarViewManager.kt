@@ -3,6 +3,7 @@ package com.michalsvec.singlerowcalendar
 import java.util.*
 
 /**
+ * Callback used for binding views to SingleRowCalendar
  * @author Michal Švec
  * @since v1.0.0
  */

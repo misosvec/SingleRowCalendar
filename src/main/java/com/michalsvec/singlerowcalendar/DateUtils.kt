@@ -46,7 +46,7 @@ object DateUtils {
         SimpleDateFormat("MMMM", Locale.getDefault()).format(date)
 
     /**
-     * @param date - which we want month 3 letters abbreviation from
+     * @param date - which we want month three letters abbreviation from
      * @return month abbreviation, for example Jan, Feb, Dec, etc...
      */
     fun getMonth3LettersName(date: Date): String =
@@ -69,7 +69,7 @@ object DateUtils {
 
     /**
      * @param count - future days count from now which we want to load
-     * @return list of future dates witch specified length
+     * @return list of future dates with specified length
      */
     fun getFutureDates(count: Int): MutableList<Date> {
         val futureDateList = mutableListOf<Date>()
@@ -83,7 +83,7 @@ object DateUtils {
 
     /**
      * @param count - past days count from now which we want to load
-     * @return list of past dates witch specified length
+     * @return list of past dates with specified length
      */
     fun getPastDates(count: Int): MutableList<Date> {
         val pastDateList = mutableListOf<Date>()
@@ -94,4 +94,19 @@ object DateUtils {
         }
         return pastDateList
     }
+
+    /**
+     * Simple way to get dates, just using days count
+     * @param pastDays - count of past days, which we want to get
+     * @param futureDays - count of future days, which we want to get
+     * @param includeCurrentDate - if true then list will contain current date else won't
+     * @return list of dates
+     */
+     fun getDates(pastDays: Int, futureDays: Int, includeCurrentDate: Boolean): List<Date> {
+        val futureList = DateUtils.getFutureDates(futureDays)
+        val cal = Calendar.getInstance(Locale.getDefault())
+        val pastList = DateUtils.getPastDates(pastDays).reversed()
+        return if (includeCurrentDate) pastList + cal.time + futureList else pastList + futureList
+    }
+
 }

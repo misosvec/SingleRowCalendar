@@ -3,6 +3,11 @@ package com.michalsvec.singlerowcalendar.selection
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * @author Michal Švec
+ * @since v1.0.0
+ */
+
 class CalendarKeyProvider(private val recyclerView: RecyclerView) :
     ItemKeyProvider<Long>(SCOPE_MAPPED) {
 

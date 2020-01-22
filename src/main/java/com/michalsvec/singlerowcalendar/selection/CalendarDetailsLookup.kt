@@ -3,9 +3,12 @@ package com.michalsvec.singlerowcalendar.selection
 import android.view.MotionEvent
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
-import com.michalsvec.singlerowcalendar.SingleRowCalendar
 import com.michalsvec.singlerowcalendar.SingleRowCalendarAdapter
 
+/**
+ * @author Michal Švec
+ * @since v1.0.0
+ */
 
 class CalendarDetailsLookup(private val recyclerView: RecyclerView) :
     ItemDetailsLookup<Long>() {
