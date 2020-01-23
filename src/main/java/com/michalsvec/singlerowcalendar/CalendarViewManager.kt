@@ -12,10 +12,11 @@ interface CalendarViewManager {
 
     /**
      * @param position of specific view in the SingleRowCalendar
+     * @param date of specific view in the SingleRowCalendar
      * @param isSelected returns true if item in the SingleRowCalendar is selected else returns false
      * @return a resource id for SingleRowCalendar itemView
      */
-    fun setCalendarViewResourceId(position: Int, isSelected: Boolean): Int
+    fun setCalendarViewResourceId(position: Int, date: Date, isSelected: Boolean): Int
 
     /**
      * @param holder is CalendarViewHolder used in SingleRowCalendar

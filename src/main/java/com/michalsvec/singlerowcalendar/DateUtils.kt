@@ -66,6 +66,18 @@ object DateUtils {
     fun getDayNumber(date: Date): String =
         SimpleDateFormat("dd", Locale.getDefault()).format(date)
 
+    /**
+     * Simple way to get dates, just using days count
+     * @param pastDays - count of past days, which we want to get
+     * @param futureDays - count of future days, which we want to get
+     * @param includeCurrentDate - if true then list will contain current date else won't
+     * @return list of dates
+     */
+    fun getNumberOfWeek(date:Date): String {
+        val cal = Calendar.getInstance()
+        cal.time = date
+        return cal[Calendar.WEEK_OF_YEAR].toString()
+    }
 
     /**
      * @param count - future days count from now which we want to load

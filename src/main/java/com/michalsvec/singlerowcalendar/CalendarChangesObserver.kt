@@ -11,13 +11,14 @@ import java.util.*
 interface CalendarChangesObserver {
 
     /**
-     * Called when year and month changed
+     * Called when year, month and week changed
+     * @param weekNumber number of week of year from the changed date
      * @param monthNumber number of month from the changed date
      * @param monthName name of month from the changed date
      * @param year from the changed date
      * @param date changed date
      */
-    fun whenMonthAndYearChanged(monthNumber: String, monthName: String, year: String, date: Date) {}
+    fun whenWeekMonthYearChanged(weekNumber: String, monthNumber: String, monthName: String, year: String, date: Date) {}
 
     /**
      * Called when selection changed

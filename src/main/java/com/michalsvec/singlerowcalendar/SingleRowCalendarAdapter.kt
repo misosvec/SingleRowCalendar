@@ -53,11 +53,13 @@ class SingleRowCalendarAdapter(
         // when position is negative, item is selected and then we have to take position back to original state
             calendarViewManager.setCalendarViewResourceId(
                 (position * -1) - 1,
+                dateList[(position * -1) - 1],
                 true
             )
         else
             calendarViewManager.setCalendarViewResourceId(
                 position,
+                dateList[position],
                 false
             )
 

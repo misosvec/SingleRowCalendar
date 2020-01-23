@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michalsvec.singlerowcalendar.selection.CalendarDetailsLookup
 import com.michalsvec.singlerowcalendar.selection.CalendarKeyProvider
+import com.michalsvec.singlerowcalendar.selection.CalendarSelectionManager
 import java.util.*
 
 /**
@@ -23,14 +24,17 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     /**
      * we can disable long press to start selection when we select this key at first
      */
-    private val GHOST_ITEM_KEY = -999999999999999299
+    private val GHOST_ITEM_KEY = -9
 
     private lateinit var selectionTracker: SelectionTracker<Long>
     private lateinit var calendarChangesObserver: CalendarChangesObserver
     private lateinit var calendarViewManager: CalendarViewManager
+    private lateinit var calendarSelectionManager: CalendarSelectionManager
+    private lateinit var setcalendarSelectionManager: CalendarSelectionManager
     val dateList: MutableList<Date> = mutableListOf()
     var previousMonthNumber = ""
     var previousYear = ""
+    var previousWeek = ""
     var multiSelection: Boolean
     var deselection: Boolean
     var longPress: Boolean
@@ -56,7 +60,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                 initialPositionIndex =
                     getInt(R.styleable.SingleRowCalendar_initialPositionIndex, pastDaysCount)
                 multiSelection = getBoolean(R.styleable.SingleRowCalendar_multiSelection, false)
-                deselection = getBoolean(R.styleable.SingleRowCalendar_deselection, false)
+                deselection = getBoolean(R.styleable.SingleRowCalendar_deselection, true)
                 longPress = getBoolean(R.styleable.SingleRowCalendar_longPress, false)
             } finally {
                 recycle()
@@ -113,17 +117,22 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                         (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
                     if (previousMonthNumber != DateUtils.getMonthNumber(dateList[lastVisibleItem])
-                        || previousYear != DateUtils.getYear(dateList[lastVisibleItem]))
+                        || previousYear != DateUtils.getYear(dateList[lastVisibleItem])
+                        || previousWeek != DateUtils.getNumberOfWeek(dateList[lastVisibleItem])
+                    ) {
 
-                        calendarChangesObserver.whenMonthAndYearChanged(
+                        calendarChangesObserver.whenWeekMonthYearChanged(
+                            DateUtils.getNumberOfWeek(dateList[scrollPosition]),
                             DateUtils.getMonthNumber(dateList[lastVisibleItem]),
                             DateUtils.getMonthName(dateList[lastVisibleItem]),
                             DateUtils.getYear(dateList[lastVisibleItem]),
                             dateList[lastVisibleItem]
                         )
+                    }
 
                     previousMonthNumber = DateUtils.getMonthNumber(dateList[lastVisibleItem])
                     previousYear = DateUtils.getYear(dateList[lastVisibleItem])
+                    previousWeek = DateUtils.getNumberOfWeek(dateList[scrollPosition])
                 }
             })
         }
@@ -137,26 +146,27 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
         // managing selection in whole SingleRowCalendar
         val selectionPredicate = object : SelectionTracker.SelectionPredicate<Long>() {
+
             override fun canSelectMultiple(): Boolean = multiSelection
 
             override fun canSetStateAtPosition(position: Int, nextState: Boolean): Boolean =
-                if (deselection)
-                    if (nextState)
-                        deselection
+                if (position != GHOST_ITEM_KEY)
+                    if (calendarSelectionManager.canBeItemSelected(position, dateList[position]))
+                        !(!nextState && !deselection) // if item is selected and deselection is
                     else
-                        false
+                        false // user cant select disabled items
                 else
-                    true
+                    true // select ghost item
 
 
             override fun canSetStateForKey(key: Long, nextState: Boolean): Boolean =
-                if (deselection)
-                    if (nextState)
-                        deselection
+                if (key.toInt() != GHOST_ITEM_KEY)
+                    if (calendarSelectionManager.canBeItemSelected(key.toInt(), dateList[key.toInt()]))
+                        !(!nextState && !deselection) // if item is selected and deselection is
                     else
-                        false
+                        false // user cant select disabled items
                 else
-                    true
+                    true // select ghost item
 
         }
 
@@ -164,7 +174,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         val selectionObserver = object : SelectionTracker.SelectionObserver<Long>() {
             override fun onItemStateChanged(key: Long, selected: Boolean) {
 
-                if (key != GHOST_ITEM_KEY && key.toInt() < dateList.size)
+                if (key.toInt() != GHOST_ITEM_KEY && key.toInt() < dateList.size)
                     calendarChangesObserver.whenSelectionChanged(
                         selected,
                         key.toInt(),
@@ -211,22 +221,29 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     /**
      * CalendarViewManager initialization
      */
-    fun setCalendarViewManager(CalendarViewManager: CalendarViewManager) {
-        this.calendarViewManager = CalendarViewManager
+    fun setCalendarViewManager(calendarViewManager: CalendarViewManager) {
+        this.calendarViewManager = calendarViewManager
     }
 
     /**
      * CalendarChangesObserver initialization
      */
-    fun setCalendarChangesObserver(CalendarChangesObserver: CalendarChangesObserver) {
-        this.calendarChangesObserver = CalendarChangesObserver
+    fun setCalendarChangesObserver(calendarChangesObserver: CalendarChangesObserver) {
+        this.calendarChangesObserver = calendarChangesObserver
+    }
+
+    /**
+     * CalendarSelectionManager initialization
+     */
+    fun setCalendarSelectionManager(calendarSelectionManager: CalendarSelectionManager) {
+        this.calendarSelectionManager = calendarSelectionManager
     }
 
     /**
      * Disables long press to start selection
      */
     private fun disableLongPress() =
-        selectionTracker.select(GHOST_ITEM_KEY)
+        selectionTracker.select(GHOST_ITEM_KEY.toLong())
 
 
     /**
@@ -293,7 +310,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     fun getSelectedDates(): List<Date> {
         val selectionList: MutableList<Date> = mutableListOf()
         selectionTracker.selection.forEach {
-            if (it != GHOST_ITEM_KEY && it.toInt() < dateList.size)
+            if (it.toInt() != GHOST_ITEM_KEY && it.toInt() < dateList.size)
                 selectionList.add(dateList[it.toInt()])
         }
         return selectionList
@@ -305,7 +322,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     fun getSelectedIndexes(): List<Int> {
         val selectionList: MutableList<Int> = mutableListOf()
         selectionTracker.selection.forEach {
-            if (it != GHOST_ITEM_KEY && it.toInt() < dateList.size)
+            if (it.toInt() != GHOST_ITEM_KEY && it.toInt() < dateList.size)
                 selectionList.add(it.toInt())
         }
         return selectionList
@@ -325,7 +342,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         if (scrollPosition > dateList.size - 1)
             scrollPosition = dateList.size - 1
         scrollToPosition(scrollPosition)
-        calendarChangesObserver.whenMonthAndYearChanged(
+        calendarChangesObserver.whenWeekMonthYearChanged(
+            DateUtils.getNumberOfWeek(dateList[scrollPosition]),
             DateUtils.getMonthNumber(dateList[scrollPosition]),
             DateUtils.getMonthName(dateList[scrollPosition]),
             DateUtils.getYear(dateList[scrollPosition]),
