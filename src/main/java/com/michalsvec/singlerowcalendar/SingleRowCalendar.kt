@@ -26,11 +26,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      */
     private val GHOST_ITEM_KEY = -9
 
-    private lateinit var selectionTracker: SelectionTracker<Long>
-    private lateinit var calendarChangesObserver: CalendarChangesObserver
-    private lateinit var calendarViewManager: CalendarViewManager
-    private lateinit var calendarSelectionManager: CalendarSelectionManager
-    private lateinit var setcalendarSelectionManager: CalendarSelectionManager
+    lateinit var selectionTracker: SelectionTracker<Long>
+    lateinit var calendarChangesObserver: CalendarChangesObserver
+    lateinit var calendarViewManager: CalendarViewManager
+    lateinit var calendarSelectionManager: CalendarSelectionManager
     val dateList: MutableList<Date> = mutableListOf()
     var previousMonthNumber = ""
     var previousYear = ""
@@ -219,27 +218,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     }
 
     /**
-     * CalendarViewManager initialization
-     */
-    fun setCalendarViewManager(calendarViewManager: CalendarViewManager) {
-        this.calendarViewManager = calendarViewManager
-    }
-
-    /**
-     * CalendarChangesObserver initialization
-     */
-    fun setCalendarChangesObserver(calendarChangesObserver: CalendarChangesObserver) {
-        this.calendarChangesObserver = calendarChangesObserver
-    }
-
-    /**
-     * CalendarSelectionManager initialization
-     */
-    fun setCalendarSelectionManager(calendarSelectionManager: CalendarSelectionManager) {
-        this.calendarSelectionManager = calendarSelectionManager
-    }
-
-    /**
      * Disables long press to start selection
      */
     private fun disableLongPress() =
@@ -332,13 +310,11 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      * This function replace old list of dates with new one, then dates are dispatched to adapter using DiffCallback
      * @param newDateList - new dates, which we want to use in calendar
      */
-    fun changeDates(newDateList: List<Date>) {
-        val diffCallback = DateDiffCallback(dateList, newDateList)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
+    fun setDates(newDateList: List<Date>) {
+        clearSelection()
         dateList.clear()
         dateList.addAll(newDateList)
-        if (adapter != null)
-            diffResult.dispatchUpdatesTo(adapter!!)
+        adapter = SingleRowCalendarAdapter(newDateList, calendarViewManager)
         if (scrollPosition > dateList.size - 1)
             scrollPosition = dateList.size - 1
         scrollToPosition(scrollPosition)
