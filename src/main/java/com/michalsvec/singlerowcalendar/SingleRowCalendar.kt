@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.AttributeSet
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michalsvec.singlerowcalendar.selection.CalendarDetailsLookup
@@ -26,14 +25,14 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      */
     private val GHOST_ITEM_KEY = -9
 
-    lateinit var selectionTracker: SelectionTracker<Long>
+    private lateinit var selectionTracker: SelectionTracker<Long>
     lateinit var calendarChangesObserver: CalendarChangesObserver
     lateinit var calendarViewManager: CalendarViewManager
     lateinit var calendarSelectionManager: CalendarSelectionManager
     val dateList: MutableList<Date> = mutableListOf()
-    var previousMonthNumber = ""
-    var previousYear = ""
-    var previousWeek = ""
+    private var previousMonthNumber = ""
+    private var previousYear = ""
+    private var previousWeek = ""
     var multiSelection: Boolean
     var deselection: Boolean
     var longPress: Boolean
@@ -83,7 +82,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
                     )
                 }
             }
-
 
             // set layout manager for RecyclerView
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -160,7 +158,11 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             override fun canSetStateForKey(key: Long, nextState: Boolean): Boolean =
                 if (key.toInt() != GHOST_ITEM_KEY)
-                    if (calendarSelectionManager.canBeItemSelected(key.toInt(), dateList[key.toInt()]))
+                    if (calendarSelectionManager.canBeItemSelected(
+                            key.toInt(),
+                            dateList[key.toInt()]
+                        )
+                    )
                         !(!nextState && !deselection) // if item is selected and deselection is
                     else
                         false // user cant select disabled items
@@ -311,7 +313,8 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      * @param newDateList - new dates, which we want to use in calendar
      */
     fun setDates(newDateList: List<Date>) {
-        clearSelection()
+        if (::selectionTracker.isInitialized)
+            clearSelection()
         dateList.clear()
         dateList.addAll(newDateList)
         adapter = SingleRowCalendarAdapter(newDateList, calendarViewManager)
