@@ -41,7 +41,7 @@ With this library, you aren't attached to library built-in UI. You can create re
 #### 3. add SingleRowCalendar to your activty or fragment layout file
 
 ```xml
-<com.michalsvec.singlerowcalendar.SingleRowCalendar
+<com.michalsvec.singlerowcalendar.calendar.SingleRowCalendar
         android:id="@+id/main_single_row_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

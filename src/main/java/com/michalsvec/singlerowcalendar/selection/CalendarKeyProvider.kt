@@ -4,7 +4,7 @@ import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * @author Michal Švec
+ * @author Michal Švec - misosvec01@gmail.com
  * @since v1.0.0
  */
 

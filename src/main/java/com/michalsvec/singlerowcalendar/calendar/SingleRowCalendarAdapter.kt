@@ -1,4 +1,4 @@
-package com.michalsvec.singlerowcalendar
+package com.michalsvec.singlerowcalendar.calendar
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 /**
- * @author Michal Švec
+ * @author Michal Švec - misosvec01@gmail.com
  * @since v1.0.0
  */
 
@@ -41,7 +41,7 @@ class SingleRowCalendarAdapter(
         return if (selectionTracker.isSelected(position.toLong())) {
             // when item is selected,position will have negative value + 1
             val selectedPosition = position + 1
-             -selectedPosition
+            -selectedPosition
         } else
             position
     }

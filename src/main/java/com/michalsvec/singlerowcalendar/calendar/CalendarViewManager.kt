@@ -1,10 +1,10 @@
-package com.michalsvec.singlerowcalendar
+package com.michalsvec.singlerowcalendar.calendar
 
 import java.util.*
 
 /**
  * Callback used for binding views to SingleRowCalendar
- * @author Michal Švec
+ * @author Michal Švec - misosvec01@gmail.com
  * @since v1.0.0
  */
 

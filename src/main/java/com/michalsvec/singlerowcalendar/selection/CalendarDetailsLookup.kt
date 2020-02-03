@@ -3,10 +3,10 @@ package com.michalsvec.singlerowcalendar.selection
 import android.view.MotionEvent
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
-import com.michalsvec.singlerowcalendar.SingleRowCalendarAdapter
+import com.michalsvec.singlerowcalendar.calendar.SingleRowCalendarAdapter
 
 /**
- * @author Michal Švec
+ * @author Michal Švec - misosvec01@gmail.com
  * @since v1.0.0
  */
 

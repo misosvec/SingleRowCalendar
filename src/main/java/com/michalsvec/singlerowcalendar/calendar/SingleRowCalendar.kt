@@ -1,4 +1,4 @@
-package com.michalsvec.singlerowcalendar
+package com.michalsvec.singlerowcalendar.calendar
 
 import android.content.Context
 import android.os.Bundle
@@ -7,13 +7,16 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.michalsvec.singlerowcalendar.R
 import com.michalsvec.singlerowcalendar.selection.CalendarDetailsLookup
 import com.michalsvec.singlerowcalendar.selection.CalendarKeyProvider
 import com.michalsvec.singlerowcalendar.selection.CalendarSelectionManager
+import com.michalsvec.singlerowcalendar.utils.DateUtils
 import java.util.*
 
+
 /**
- * @author Michal Švec
+ * @author Michal Švec - misosvec01@gmail.com
  * @since v1.0.0
  */
 
@@ -24,15 +27,15 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      * we can disable long press to start selection when we select this key at first
      */
     private val GHOST_ITEM_KEY = -9
-
     private lateinit var selectionTracker: SelectionTracker<Long>
-    lateinit var calendarChangesObserver: CalendarChangesObserver
-    lateinit var calendarViewManager: CalendarViewManager
-    lateinit var calendarSelectionManager: CalendarSelectionManager
-    val dateList: MutableList<Date> = mutableListOf()
+    private val dateList: MutableList<Date> = mutableListOf()
     private var previousMonthNumber = ""
     private var previousYear = ""
     private var previousWeek = ""
+    private var scrollPosition = 0
+    lateinit var calendarChangesObserver: CalendarChangesObserver
+    lateinit var calendarViewManager: CalendarViewManager
+    lateinit var calendarSelectionManager: CalendarSelectionManager
     var multiSelection: Boolean
     var deselection: Boolean
     var longPress: Boolean
@@ -40,7 +43,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     var futureDaysCount: Int
     var includeCurrentDate: Boolean
     var initialPositionIndex: Int
-    private var scrollPosition = 0
 
 
     init {
@@ -48,7 +50,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
         itemAnimator = null
 
         // get attributes from xml declaration
-        context.theme.obtainStyledAttributes(attrs, R.styleable.SingleRowCalendar, 0, 0).apply {
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.SingleRowCalendar, 0, 0
+        ).apply {
 
             try {
                 pastDaysCount = getInt(R.styleable.SingleRowCalendar_pastDaysCount, 0)
@@ -70,6 +75,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
         this.apply {
 
+            // if user haven't specified list of custom dates, we can fetch them using DateUtils.getDates function
             if (dateList.isNullOrEmpty()) {
                 dateList.apply {
                     clear()
@@ -85,6 +91,7 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             // set layout manager for RecyclerView
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
             // scroll to a user selected position
             (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
                 initialPositionIndex,
@@ -93,7 +100,11 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
 
             setHasFixedSize(true)
 
-            adapter = SingleRowCalendarAdapter(dateList, calendarViewManager)
+            adapter =
+                SingleRowCalendarAdapter(
+                    dateList,
+                    calendarViewManager
+                )
 
             initSelection()
 
@@ -209,13 +220,10 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(selectionPredicate).build()
 
-
         if (!longPress)
             disableLongPress()
 
-
         selectionTracker.addObserver(selectionObserver)
-
 
     }
 
@@ -224,7 +232,6 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      */
     private fun disableLongPress() =
         selectionTracker.select(GHOST_ITEM_KEY.toLong())
-
 
     /**
      * Clears both primary and provisional selections.
@@ -259,20 +266,17 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      */
     fun deselect(position: Int) = selectionTracker.deselect(position.toLong())
 
-
     /**
      * Check if particular item is selected
      * @return true if the item specified by its id is selected
      */
     fun isSelected(position: Int) = selectionTracker.isSelected(position.toLong())
 
-
     /**
      * Check if SingleRowCalendar has any item selected
      * @return true if SingleRowCalednar has any item selected else returns false
-     *///TODO CHECK GHOST ITEM
+     */
     fun hasSelection(): Boolean = getSelectedIndexes().isNotEmpty()
-
 
     /**
      * Restores selection from previously saved state. Call this method from Activity#onCreate.
@@ -287,6 +291,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
     fun onSaveInstanceState(state: Bundle) = selectionTracker.onSaveInstanceState(state)
 
 
+    /**
+     * @return list of selected dates
+     */
     fun getSelectedDates(): List<Date> {
         val selectionList: MutableList<Date> = mutableListOf()
         selectionTracker.selection.forEach {
@@ -317,7 +324,11 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             clearSelection()
         dateList.clear()
         dateList.addAll(newDateList)
-        adapter = SingleRowCalendarAdapter(newDateList, calendarViewManager)
+        adapter =
+            SingleRowCalendarAdapter(
+                newDateList,
+                calendarViewManager
+            )
         if (scrollPosition > dateList.size - 1)
             scrollPosition = dateList.size - 1
         scrollToPosition(scrollPosition)
@@ -329,4 +340,9 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
             dateList[scrollPosition]
         )
     }
+
+    /**
+     * @return list of dates used in calendar
+     */
+    fun getDates(): List<Date> = dateList
 }

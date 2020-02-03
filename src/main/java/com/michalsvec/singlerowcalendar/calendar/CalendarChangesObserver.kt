@@ -1,10 +1,10 @@
-package com.michalsvec.singlerowcalendar
+package com.michalsvec.singlerowcalendar.calendar
 
 import java.util.*
 
 /**
  * Observer for events from SingleRowCalendar
- * @author Michal Švec
+ * @author Michal Švec - misosvec01@gmail.com
  * @since v1.0.0
  */
 

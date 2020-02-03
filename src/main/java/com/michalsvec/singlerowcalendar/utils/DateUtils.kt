@@ -1,10 +1,10 @@
-package com.michalsvec.singlerowcalendar
+package com.michalsvec.singlerowcalendar.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * @author Michal Švec
+ * @author Michal Švec - misosvec01@gmail.com
  * @since v1.0.0
  */
 
@@ -112,9 +112,14 @@ object DateUtils {
      * @return list of dates
      */
     fun getDates(pastDays: Int, futureDays: Int, includeCurrentDate: Boolean): List<Date> {
-        val futureList = getFutureDates(futureDays)
+        val futureList =
+            getFutureDates(
+                futureDays
+            )
         val cal = Calendar.getInstance(Locale.getDefault())
-        val pastList = getPastDates(pastDays).reversed()
+        val pastList = getPastDates(
+            pastDays
+        ).reversed()
         return if (includeCurrentDate) pastList + cal.time + futureList else pastList + futureList
     }
 
