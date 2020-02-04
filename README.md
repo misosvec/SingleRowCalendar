@@ -1,11 +1,11 @@
 # SingleRowCalendar
 With this library, you aren't attached to library built-in UI. You can create really beautiful and customizable UI and use selection features without hands getting dirty with RecyclerView and SelectionTracker.
 
-[ ![Download](https://api.bintray.com/packages/michalsvec/android-libraries/single-row-calednar/images/download.svg) ](https://bintray.com/michalsvec/android-libraries/single-row-calednar/_latestVersion)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/miso01/SingleRowCalendar/blob/docs/LICENSE)
+[![Download](https://api.bintray.com/packages/michalsvec/android-libraries/single-row-calednar/images/download.svg) ](https://bintray.com/michalsvec/android-libraries/single-row-calednar/_latestVersion)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/miso01/SingleRowCalendar/blob/master/LICENSE)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EFH6LSWRHAQ4J&source=url)
 [![Sample](https://img.shields.io/badge/Sample-Code-red)](https://github.com/miso01/SingleRowCalendar/tree/master/app/src/main)
-[![Sample](https://img.shields.io/badge/Sample-Medium%20Article-black)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EFH6LSWRHAQ4J&source=url)
+[![Sample](https://img.shields.io/badge/Sample-Medium%20Article-black)](https://medium.com/@misosvec01/single-row-horizontal-calendar-has-never-been-easier-6ad989fafee8)
 
 <img src="presentation_assets/special.gif" width="285"/> <img src="presentation_assets/pinkOrange.gif" width="285" /> <img src="presentation_assets/black.gif" width="285"/>
 <img src="presentation_assets/purpleSimple.gif" width="285"/> <img src="presentation_assets/blue.gif" width="285"/> <img src="presentation_assets/mountains.gif" width="285" />
@@ -25,7 +25,23 @@ With this library, you aren't attached to library built-in UI. You can create re
 * clear selection
 * and more...
 
-## INSTALLING
+## INSTALLATION
+#### GRADLE 
+```
+dependencies {
+    implementation 'com.michalsvec:single-row-calednar:1.0.0'
+}
+```
+
+#### MAVEN
+```
+<dependency>
+	<groupId>com.michalsvec</groupId>
+	<artifactId>single-row-calednar</artifactId>
+	<version>1.0.0</version>
+	<type>pom</type>
+</dependency>
+```
 
 ## USAGE
 #### 1. create calendar item view layout files
@@ -113,7 +129,7 @@ val myCalendarChangesObserver = object : CalendarChangesObserver {
 
 
 #### 7. provide dates and init SingleRowCalendar in your code
-You can choose between two ways of doing it. If you want simple provide a few past of future days, you should specify these attributes ```pastDaysCount```, ```futureDaysCount``` and ```includeCurrentDate``` in an XML or directly in code. 
+You can choose between two ways of doing it. If you want simple provide few past of future days, you should specify these attributes ```pastDaysCount```, ```futureDaysCount``` and ```includeCurrentDate``` in an XML or directly in code. 
 If you are not satisfied with the previous solution you can specify your own list of dates using ```setDates``` function. 
 When you provide dates to the calendar you can also set you initial position using this property ```initialPositionIndex```.
 
@@ -140,7 +156,7 @@ val singleRowCalendar = main_single_row_calendar.apply {
 * ```multiSelection```
   * enable or disable multi selection
 * ```deselection```
-  * disable unselection 
+  * enable or disable deselection 
 * ```longPress```
   * first selected item starts with a long press
 * ```calendarChangesObserver```  
@@ -174,7 +190,6 @@ val singleRowCalendar = main_single_row_calendar.apply {
 * ```clearSelection()```
   * deselect all items in the calendar 
 
-  
 ### DateUtils class
 You can use DateUtils class when you want get some values from date. 
 * ```getDayName(date: Date)```
