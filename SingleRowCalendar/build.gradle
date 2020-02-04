@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.novoda.bintray-release' // must be applied after your artifact generating plugin (eg. java / com.android.library)
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -22,6 +24,16 @@ android {
         }
     }
 
+}
+
+publish {
+    repoName = "android-libraries"
+    userOrg = 'michalsvec'
+    groupId = 'com.michalsvec'
+    artifactId = 'single-row-calednar'
+    publishVersion = '1.0.0'
+    desc = 'Android library for horizontal single row calendar. With this library, you aren\'t attached to library built-in UI. You can create really beautiful and customizable UI and use selection features without hands getting dirty with RecyclerView and SelectionTracker.'
+    website = 'https://github.com/miso01/SingleRowCalendar'
 }
 
 dependencies {
