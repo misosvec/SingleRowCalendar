@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SingleRowCalendar.iml" filepath="$PROJECT_DIR$/SingleRowCalendar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SingleRowCalendar/SingleRowCalendar.iml" filepath="$PROJECT_DIR$/SingleRowCalendar/SingleRowCalendar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SingleRowCalendarSample.iml" filepath="$PROJECT_DIR$/SingleRowCalendarSample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
