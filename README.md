@@ -1,6 +1,6 @@
 # SingleRowCalendar
 
-# I do not have time to maintain this library. This library is for sale, contact me for more info.
+# I do not have time to maintain this library. If you want to own and maintin this library, contact me for more info.
 With this library, you aren't attached to library built-in UI. You can create really beautiful and customizable UI and use selection features without hands getting dirty with RecyclerView and SelectionTracker.
 
 [![Download](https://api.bintray.com/packages/michalsvec/android-libraries/single-row-calednar/images/download.svg) ](https://bintray.com/michalsvec/android-libraries/single-row-calednar/_latestVersion)
