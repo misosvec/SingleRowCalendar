@@ -345,4 +345,23 @@ class SingleRowCalendar(context: Context, attrs: AttributeSet) : RecyclerView(co
      * @return list of dates used in calendar
      */
     fun getDates(): List<Date> = dateList
+	
+	fun updateDates(newDateList: List<Date>) {
+        if (::selectionTracker.isInitialized)
+            clearSelection()
+        dateList.clear()
+        dateList.addAll(newDateList)
+        adapter?.notifyDataSetChanged()
+
+        if (scrollPosition > dateList.size - 1)
+            scrollPosition = dateList.size - 1
+        scrollToPosition(scrollPosition)
+        calendarChangesObserver.whenWeekMonthYearChanged(
+            DateUtils.getNumberOfWeek(dateList[scrollPosition]),
+            DateUtils.getMonthNumber(dateList[scrollPosition]),
+            DateUtils.getMonthName(dateList[scrollPosition]),
+            DateUtils.getYear(dateList[scrollPosition]),
+            dateList[scrollPosition]
+        )
+    }
 }
